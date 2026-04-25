@@ -1,0 +1,29 @@
+{
+	"compilerOptions": {
+		"declaration": true,
+		"removeComments": true,
+		"emitDecoratorMetadata": true,
+		"experimentalDecorators": true,
+		"allowSyntheticDefaultImports": true,
+		"target": "ES2021",
+		"sourceMap": true,
+		"ignoreDeprecations": "6.0",
+		"rootDir": "./src",
+		"outDir": "./dist",
+		"baseUrl": "./",
+		"paths": {
+			"@/*": ["src/*"],
+			"@prisma/__generated__": ["prisma/__generated__"],
+			"@prisma/__generated__/*": ["prisma/__generated__/*"]
+		},
+		"incremental": true,
+		"skipLibCheck": true,
+		"strictNullChecks": false,
+		"noImplicitAny": false,
+		"strictBindCallApply": false,
+		"forceConsistentCasingInFileNames": false,
+		"noFallthroughCasesInSwitch": false,
+		"jsx": "react"
+	},
+	"exclude": ["node_modules", "dist", "prisma.config.ts"]
+}

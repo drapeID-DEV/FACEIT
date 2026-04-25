@@ -12,7 +12,7 @@ const initialState: sidebarState = {
 }
 
 const sidebarSlice = createSlice({
-	name: 'cities',
+	name: 'sidebar',
 	initialState,
 	reducers: {
 		setActiveItem(state, action: PayloadAction<PopupType>) {
