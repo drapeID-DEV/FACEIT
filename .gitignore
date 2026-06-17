@@ -1,78 +1,101 @@
-# Root
+# ==========================================
+# OS
+# ==========================================
 .DS_Store
 Thumbs.db
+Desktop.ini
+
+# ==========================================
+# Logs
+# ==========================================
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
+*.pid
+*.pid.lock
+*.seed
 
-# Env files
+# ==========================================
+# Environment
+# ==========================================
 .env
 .env.*
 !.env.example
 
+# ==========================================
 # IDE
+# ==========================================
 .vscode/
 .idea/
 
-# OS
-Desktop.ini
-
-# =========================
+# ==========================================
 # CLIENT (Next.js)
-# =========================
-client/node_modules/
-client/.next/
-client/out/
-client/build/
-client/.turbo/
-client/coverage/
+# ==========================================
+faceit-client/node_modules/
+faceit-client/.next/
+faceit-client/out/
+faceit-client/build/
+faceit-client/.turbo/
+faceit-client/.vercel/
+faceit-client/coverage/
 
-# Next cache
-client/.vercel/
+# Next.js cache
+faceit-client/.swc/
 
-# Typescript
-client/*.tsbuildinfo
+# TypeScript
+faceit-client/*.tsbuildinfo
 
-# =========================
+# ==========================================
 # SERVER (NestJS)
-# =========================
+# ==========================================
 faceit-server/node_modules/
 faceit-server/dist/
 faceit-server/coverage/
+
+# TypeScript
 faceit-server/*.tsbuildinfo
+faceit-server/tsconfig.build.tsbuildinfo
 
 # Prisma generated
 faceit-server/generated/
 faceit-server/prisma/__generated__/
 
-# Uploads / temp files
+# Uploads
 faceit-server/uploads/
 faceit-server/tmp/
 faceit-server/temp/
 
 # Logs
 faceit-server/logs/
-*.pid
-*.seed
-*.pid.lock
 
-# =========================
+# ==========================================
 # Docker
-# =========================
+# ==========================================
 docker-data/
 postgres_data/
 redis_data/
 
-# =========================
-# Tests
-# =========================
+# ==========================================
+# Testing
+# ==========================================
 coverage/
 .nyc_output/
 
-# =========================
-# Misc
-# =========================
-*.local
+# ==========================================
+# Cache
+# ==========================================
+.cache/
 *.cache
+
+# ==========================================
+# Local configs
+# ==========================================
+*.local
+
+# ==========================================
+# AI files (optional)
+# ==========================================
+CLAUDE.md
+AGENTS.md

@@ -4,8 +4,8 @@ import { NestFactory } from '@nestjs/core'
 import { RedisStore } from 'connect-redis'
 import cookieParser from 'cookie-parser'
 import session from 'express-session'
-import IORedis from 'ioredis'
 import ms, { StringValue } from 'ms'
+import { createClient } from 'redis'
 
 import { AppModule } from './app.module'
 import { parseBoolean } from './libs/common/utils/parse-boolean.util'
@@ -14,7 +14,11 @@ async function bootstrap() {
 	const app = await NestFactory.create(AppModule)
 
 	const config = app.get(ConfigService)
-	const redis = new IORedis(config.getOrThrow('REDIS_URI'))
+	const redisClient = createClient({
+		url: config.getOrThrow('REDIS_URI')
+	})
+
+	await redisClient.connect()
 
 	app.use(cookieParser(config.getOrThrow('COOKIES_SECRET')))
 
@@ -26,7 +30,7 @@ async function bootstrap() {
 
 	app.use(
 		session({
-			secret: config.getOrThrow<string>('SECRET_SESSION'),
+			secret: config.getOrThrow<string>('SESSION_SECRET'),
 			name: config.getOrThrow<string>('SESSION_NAME'),
 			resave: true,
 			saveUninitialized: false,
@@ -38,7 +42,7 @@ async function bootstrap() {
 				sameSite: 'lax'
 			},
 			store: new RedisStore({
-				client: redis,
+				client: redisClient,
 				prefix: config.getOrThrow('SESSION_FOLDER')
 			})
 		})
