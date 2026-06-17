@@ -18,4 +18,8 @@ export class LoginDto {
 		message: 'Password must contain at least 6 characters.'
 	})
 	password: string
+
+	@IsOptional()
+	@IsString()
+	code: string
 }

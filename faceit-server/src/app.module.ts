@@ -5,6 +5,7 @@ import { AuthModule } from './auth/auth.module'
 import { EmailConfirmationModule } from './auth/email-confirmation/email-confirmation.module'
 import { MailModule } from './auth/mail/mail.module'
 import { PasswordRecoveryModule } from './auth/password-recovery/password-recovery.module'
+import { TwoFactorAuthModule } from './auth/two-factor-auth/two-factor-auth.module'
 import { IS_DEV_ENV } from './libs/common/utils/is-dev.util'
 import { PrismaModule } from './prisma/prisma.module'
 import { UserModule } from './user/user.module'
@@ -20,7 +21,8 @@ import { UserModule } from './user/user.module'
 		UserModule,
 		EmailConfirmationModule,
 		MailModule,
-		PasswordRecoveryModule
+		PasswordRecoveryModule,
+		TwoFactorAuthModule
 	]
 })
 export class AppModule {}

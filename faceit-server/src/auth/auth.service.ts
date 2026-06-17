@@ -18,12 +18,14 @@ import { UserService } from '@/user/user.service'
 import { AuthMethod } from '../../generated/prisma'
 import { LoginDto } from './dto/login.dto'
 import { RegisterDto } from './dto/register.dto'
+import { TwoFactorAuthService } from './two-factor-auth/two-factor-auth.service'
 
 @Injectable()
 export class AuthService {
 	public constructor(
 		private readonly userService: UserService,
 		private readonly configService: ConfigService,
+		private readonly twoFactorAuthService: TwoFactorAuthService,
 		@Inject(forwardRef(() => EmailConfirmationService))
 		private readonly emailConfirmationService: EmailConfirmationService
 	) {}
@@ -46,7 +48,7 @@ export class AuthService {
 			false
 		)
 
-		await this.emailConfirmationService.sendVerificationToken(newUser)
+		await this.emailConfirmationService.sendVerificationToken(newUser.email)
 
 		return {
 			message:
@@ -78,9 +80,27 @@ export class AuthService {
 		}
 
 		if (!user.isVerified) {
-			await this.emailConfirmationService.sendVerificationToken(user)
+			await this.emailConfirmationService.sendVerificationToken(
+				user.email
+			)
 			throw new UnauthorizedException(
 				'Your email address has not been verified. Please check your inbox and verify your email address.'
+			)
+		}
+
+		if (user.isTwoFactorEnabled) {
+			if (!dto.code) {
+				await this.twoFactorAuthService.sendTwoFactorToken(user.email)
+
+				return {
+					message:
+						'Please check your email. A two-factor authentication code is required.'
+				}
+			}
+
+			await this.twoFactorAuthService.validateTwoFactorToken(
+				user.email,
+				dto.code
 			)
 		}
 

@@ -5,6 +5,7 @@ import { Resend } from 'resend'
 
 import ConfirmationTemplate from './templates/confirmation.template'
 import ResetPasswordTemplate from './templates/reset-password.template'
+import TwoFactorAuthTemplate from './templates/two-factor.template'
 
 @Injectable()
 export class MailService {
@@ -35,6 +36,17 @@ export class MailService {
 			subject: 'Reset your password',
 			react: ResetPasswordTemplate({
 				domain: this.configService.getOrThrow('ALLOWED_ORIGIN'),
+				token
+			})
+		})
+	}
+
+	public async sendTwoFactorTokenEmail(email: string, token: string) {
+		await this.resend.emails.send({
+			from: 'Faceit <onboarding@resend.dev>',
+			to: email,
+			subject: 'Two-Factor Authentication',
+			react: TwoFactorAuthTemplate({
 				token
 			})
 		})

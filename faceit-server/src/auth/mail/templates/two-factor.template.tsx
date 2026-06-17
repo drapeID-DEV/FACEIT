@@ -48,7 +48,7 @@ export function TwoFactorAuthTemplate({
 							</div>
 						</Section>
 						<Text className="mb-5 text-base leading-7 text-zinc-300">
-							This code will expire in 10 minutes.
+							This code will expire in 15 minutes.
 						</Text>
 						<Text className="mt-8 border-t border-zinc-800 pt-5 text-sm leading-6 text-zinc-500">
 							If you did not attempt to sign in, please ignore

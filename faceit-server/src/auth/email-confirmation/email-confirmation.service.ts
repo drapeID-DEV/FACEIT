@@ -62,12 +62,8 @@ export class EmailConfirmationService {
 		return verificationToken
 	}
 
-	public async sendVerificationToken(user: User) {
-		const verificationToken = await this.generateVerificationToken(
-			user.email
-		)
-
-		const verificationLink = `${this.config.get('ALLOWED_ORIGIN')}/auth/verify?token=${verificationToken}`
+	public async sendVerificationToken(email: string) {
+		const verificationToken = await this.generateVerificationToken(email)
 
 		try {
 			await this.mailService.sendConfirmationEmail(
