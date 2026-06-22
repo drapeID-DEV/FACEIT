@@ -13,9 +13,6 @@ export const RegisterSchema = z
 		}),
 		passwordRepeat: z.string().min(8, {
 			message: 'Min password length is 8'
-		}),
-		country: z.string().min(1, {
-			message: 'Select country'
 		})
 	})
 	.refine((data) => data.password === data.passwordRepeat, {

@@ -1,35 +1,41 @@
-export interface IAuthRes {
-	message: string;
-	tokenType: string;
+export interface IAccount {
+	id: string;
+	type: string;
+	provider: string;
+	refreshToken: string;
 	accessToken: string;
-	expiresInSeconds: number;
-	user: {
-		id: number;
-		nickname: string;
-		role: string;
-	};
+	expiresAt: Date;
+	createdAt: Date;
+	updatedAt: Date;
+	user: IUser;
+	userId: string;
 }
 
-export interface IUserRes {
-	id: number;
+export interface IUser {
+	user: IUserData;
+}
+
+export interface IUserData {
+	id: string;
+	email: string;
+	password: string;
 	nickname: string;
+	profilePic: string;
 	role: string;
+	isVerified: boolean;
+	isTwoFactorEnabled: boolean;
+	method: string;
+	createdAt: string;
+	updatedAt: string;
+	accounts: any[];
 }
 
-export interface ILogoutRes {
+export interface IInfoMessageRes {
 	message: string;
 }
 
 export interface IErrorRes {
-	error: string;
-	code: string;
-	timestamp: string;
-	requestId: string;
-	path: string;
-}
-
-export interface IRefreshRes {
 	message: string;
-	tokenType: string;
-	expiresInSeconds: number;
+	error: string;
+	statusCode: number;
 }

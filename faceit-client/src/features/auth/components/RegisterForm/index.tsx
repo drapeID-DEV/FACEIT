@@ -9,13 +9,14 @@ import {
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Input } from '@/shared/components/ui/Input';
 import { PasswordInput } from '@/shared/components/ui/PasswordInput';
-import { CountrySelectContainer } from '@/shared/components/ui/CountrySelectContainer';
+import { notification } from '@/shared/utils/notifications';
 
 export function RegisterForm() {
 	const {
 		register,
 		handleSubmit,
 		control,
+		reset,
 		formState: { errors }
 	} = useForm<TRegisterSchema>({
 		resolver: zodResolver(RegisterSchema),
@@ -23,13 +24,17 @@ export function RegisterForm() {
 			nickname: '',
 			email: '',
 			password: '',
-			passwordRepeat: '',
-			country: ''
+			passwordRepeat: ''
 		}
 	});
 
 	const onSubmit = (values: TRegisterSchema) => {
 		console.log(values);
+		reset();
+		notification.success(
+			'Registration Successful',
+			'Please check your email to verify your account.'
+		);
 	};
 
 	return (
@@ -45,34 +50,24 @@ export function RegisterForm() {
 					{...register('nickname')}
 					error={errors.nickname?.message}
 				/>
-
 				<Input
 					label="Email"
 					placeholder="name@mail.com"
 					{...register('email')}
 					error={errors.email?.message}
 				/>
-
 				<PasswordInput
 					label="Password"
 					placeholder="******"
 					{...register('password')}
 					error={errors.password?.message}
 				/>
-
 				<PasswordInput
 					label="Repeat password"
 					placeholder="******"
 					{...register('passwordRepeat')}
 					error={errors.passwordRepeat?.message}
 				/>
-
-				<CountrySelectContainer
-					control={control}
-					name="country"
-					error={errors.country?.message}
-				/>
-
 				<button
 					className="bg-widget py-2 px-5 rounded-md hover:bg-amber-900 duration-200"
 					type="submit"

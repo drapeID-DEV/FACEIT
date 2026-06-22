@@ -4,7 +4,6 @@ import '../globals.css';
 import { LeftSidebar } from '@/features/menu-system/components/LeftSidebar';
 import { RightSidebar } from '@/features/menu-system/components/RightSidebar';
 import { PopupMenu } from '@/features/popups/components/PopupMenu';
-import { useGetMeQuery } from '@/store/api/authApi';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
@@ -13,7 +12,6 @@ export default function MainLayout({
 }: {
 	children: React.ReactNode;
 }) {
-	const { isLoading, isFetching, error } = useGetMeQuery();
 	const router = useRouter();
 
 	// useEffect(() => {
