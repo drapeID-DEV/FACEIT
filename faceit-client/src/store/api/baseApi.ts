@@ -1,7 +1,9 @@
 import {
 	BaseQueryFn,
 	createApi,
-	fetchBaseQuery
+	FetchArgs,
+	fetchBaseQuery,
+	FetchBaseQueryError
 } from '@reduxjs/toolkit/query/react';
 
 const baseQuery = fetchBaseQuery({
@@ -9,15 +11,16 @@ const baseQuery = fetchBaseQuery({
 	credentials: 'include'
 });
 
-const baseQueryWithReauth: BaseQueryFn = async (args, api, extraOptions) => {
-	let result = await baseQuery(args, api, extraOptions);
+const appBaseQuery: BaseQueryFn<
+	string | FetchArgs,
+	unknown,
+	FetchBaseQueryError
+> = async (args, api, extraOptions) => {
+	const result = await baseQuery(args, api, extraOptions);
 
-	const isAuthRequest =
-		typeof args !== 'string' && args.url?.includes('/auth');
-
-	if (result.error?.status === 401 && !isAuthRequest) {
+	if (result.error?.status === 401) {
 		if (typeof window !== 'undefined') {
-			window.location.href = '/auth/login';
+			window.location.replace('/auth/login');
 		}
 	}
 
@@ -26,7 +29,7 @@ const baseQueryWithReauth: BaseQueryFn = async (args, api, extraOptions) => {
 
 export const api = createApi({
 	reducerPath: 'api',
-	baseQuery: baseQueryWithReauth,
+	baseQuery: appBaseQuery,
 	tagTypes: ['Profile'],
 	endpoints: () => ({})
 });
