@@ -10,6 +10,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Input } from '@/shared/components/ui/Input';
 import { PasswordInput } from '@/shared/components/ui/PasswordInput';
 import { notification } from '@/shared/utils/notifications';
+import { useRegisterMutation } from '@/store/api/authApi';
+import { TApiError } from '@/shared/types/api/responses';
 
 export function RegisterForm() {
 	const {
@@ -28,13 +30,19 @@ export function RegisterForm() {
 		}
 	});
 
-	const onSubmit = (values: TRegisterSchema) => {
-		console.log(values);
-		reset();
-		notification.success(
-			'Registration Successful',
-			'Please check your email to verify your account.'
-		);
+	const [registerUser, { isLoading }] = useRegisterMutation();
+
+	const onSubmit = async (values: TRegisterSchema) => {
+		try {
+			const response = await registerUser(values).unwrap();
+
+			reset();
+
+			notification.info(response.message);
+		} catch (error) {
+			const err = error as TApiError;
+			notification.error(err.data.message);
+		}
 	};
 
 	return (
@@ -71,6 +79,7 @@ export function RegisterForm() {
 				<button
 					className="bg-widget py-2 px-5 rounded-md hover:bg-amber-900 duration-200"
 					type="submit"
+					disabled={isLoading}
 				>
 					Register
 				</button>

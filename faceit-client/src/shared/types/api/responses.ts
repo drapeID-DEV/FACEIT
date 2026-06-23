@@ -1,3 +1,5 @@
+import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
+
 export interface IAccount {
 	id: string;
 	type: string;
@@ -34,8 +36,10 @@ export interface IInfoMessageRes {
 	message: string;
 }
 
-export interface IErrorRes {
-	message: string;
-	error: string;
-	statusCode: number;
-}
+export type TApiError = FetchBaseQueryError & {
+	data: {
+		statusCode: number;
+		message: string;
+		error: string;
+	};
+};

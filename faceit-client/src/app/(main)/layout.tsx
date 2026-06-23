@@ -1,27 +1,13 @@
-'use client';
-
 import '../globals.css';
 import { LeftSidebar } from '@/features/menu-system/components/LeftSidebar';
 import { RightSidebar } from '@/features/menu-system/components/RightSidebar';
 import { PopupMenu } from '@/features/popups/components/PopupMenu';
-import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
 
 export default function MainLayout({
 	children
 }: {
 	children: React.ReactNode;
 }) {
-	const router = useRouter();
-
-	// useEffect(() => {
-	// 	if (error) {
-	// 		router.replace('/auth/login');
-	// 	}
-	// }, [error]);
-
-	// if (isLoading || isFetching) return null;
-
 	return (
 		<>
 			<LeftSidebar />

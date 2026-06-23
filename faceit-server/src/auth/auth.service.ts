@@ -42,7 +42,7 @@ export class AuthService {
 		const newUser = await this.userService.create(
 			dto.email,
 			dto.password,
-			dto.name,
+			dto.nickname,
 			'',
 			AuthMethod.CREADENTIALS,
 			false

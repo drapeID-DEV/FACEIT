@@ -11,11 +11,14 @@ import {
 } from '@/features/auth/schemes/login.schema';
 import { useLoginMutation } from '@/store/api/authApi';
 import { useRouter } from 'next/navigation';
+import { notification } from '@/shared/utils/notifications';
+import { TApiError } from '@/shared/types/api/responses';
 
 export function LoginForm() {
 	const {
 		register,
 		handleSubmit,
+		reset,
 		formState: { errors }
 	} = useForm<TLoginSchema>({
 		resolver: zodResolver(LoginSchema),
@@ -26,15 +29,18 @@ export function LoginForm() {
 	});
 
 	const router = useRouter();
-	const [login] = useLoginMutation();
+	const [login, { isLoading }] = useLoginMutation();
 
 	const onSubmit = async (values: TLoginSchema) => {
 		try {
-			await login(values).unwrap();
+			const response = await login(values).unwrap();
 
-			// router.push('/');
-		} catch (e) {
-			console.log(e);
+			router.push('/');
+
+			reset();
+		} catch (error) {
+			const err = error as TApiError;
+			notification.error(err.data.message);
 		}
 	};
 
@@ -60,6 +66,7 @@ export function LoginForm() {
 				/>
 
 				<button
+					disabled={isLoading}
 					className="bg-widget py-2 px-5 rounded-md hover:bg-amber-900 duration-200"
 					type="submit"
 				>

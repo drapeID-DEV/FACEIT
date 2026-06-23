@@ -10,7 +10,8 @@ export const authApi = api.injectEndpoints({
 				url: '/auth/login',
 				method: 'POST',
 				body: data
-			})
+			}),
+			invalidatesTags: ['Profile']
 		}),
 		register: builder.mutation<IInfoMessageRes, IRegisterReq>({
 			query: (data) => ({
@@ -19,13 +20,20 @@ export const authApi = api.injectEndpoints({
 				body: data
 			})
 		}),
-		getProfile: builder.query<IUserData, void>({
-			query: () => '/auth/profile'
-		}),
 		logout: builder.mutation<void, void>({
 			query: () => ({
 				url: '/auth/logout',
 				method: 'POST'
+			}),
+			invalidatesTags: ['Profile']
+		}),
+		newVerification: builder.mutation<void, string | null>({
+			query: (token) => ({
+				url: '/auth/email-confirmation',
+				method: 'POST',
+				body: {
+					token
+				}
 			})
 		})
 	})
@@ -34,6 +42,6 @@ export const authApi = api.injectEndpoints({
 export const {
 	useLoginMutation,
 	useRegisterMutation,
-	useGetProfileQuery,
-	useLogoutMutation
+	useLogoutMutation,
+	useNewVerificationMutation
 } = authApi;

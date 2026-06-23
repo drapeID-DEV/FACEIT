@@ -2,15 +2,13 @@ import { toast } from 'react-toastify';
 import { ToastMessage } from '../components/ui/ToastMessage';
 
 export const notification = {
-	success: (title: string, description?: string) =>
-		toast.success(<ToastMessage title={title} description={description} />),
+	success: (message: string) =>
+		toast.success(<ToastMessage content={message} />),
 
-	error: (title: string, description?: string) =>
-		toast.error(<ToastMessage title={title} description={description} />),
+	error: (message: string) => toast.error(<ToastMessage content={message} />),
 
-	info: (title: string, description?: string) =>
-		toast.info(<ToastMessage title={title} description={description} />),
+	info: (message: string) => toast.info(<ToastMessage content={message} />),
 
-	warning: (title: string, description?: string) =>
-		toast.warning(<ToastMessage title={title} description={description} />)
+	warning: (message: string) =>
+		toast.warning(<ToastMessage content={message} />)
 };
