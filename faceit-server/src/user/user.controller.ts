@@ -21,8 +21,15 @@ export class UserController {
 
 	@Authorization()
 	@HttpCode(HttpStatus.OK)
-	@Get('profile')
-	public async findProfile(@Authorized('id') userId: string) {
+	@Get('profile/:nickname')
+	public async findProfile(@Param('nickname') nickname: string) {
+		return this.userService.findByNickname(nickname)
+	}
+
+	@Authorization()
+	@HttpCode(HttpStatus.OK)
+	@Get('me')
+	public async findMe(@Authorized('id') userId: string) {
 		return this.userService.findById(userId)
 	}
 

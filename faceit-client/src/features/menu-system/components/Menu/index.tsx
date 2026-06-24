@@ -16,15 +16,12 @@ export function Menu({ menuItems, className }: Props) {
 	return (
 		<nav className={`flex flex-col gap-2 ${className ? className : ''}`}>
 			{menuItems.map((element) => {
-				const href = element.dynamic
-					? element.link.replace('[userID]', '123')
-					: element.link;
 				return (
 					<MenuItem
 						key={element.title}
 						menuItem={element}
-						link={href}
-						isActive={!!match(pathname)(href)}
+						link={element.link}
+						isActive={!!match(pathname)(element.link)}
 					/>
 				);
 			})}

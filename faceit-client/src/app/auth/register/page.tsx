@@ -6,6 +6,6 @@ export const metadata: Metadata = {
 	description: 'Register on FACEIT'
 };
 
-export default function Register() {
+export default function RegisterPage() {
 	return <RegisterForm />;
 }

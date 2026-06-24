@@ -7,6 +7,6 @@ export const metadata: Metadata = {
 	description: 'Start matchmaking on FACEIT'
 };
 
-export default function page({}: Props) {
+export default function MatchmakingPage({}: Props) {
 	return <div>Matches</div>;
 }

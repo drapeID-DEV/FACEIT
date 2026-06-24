@@ -29,6 +29,27 @@ export class UserService {
 		return user
 	}
 
+	public async findByNickname(nickname: string) {
+		const user = await this.prismaService.user.findUnique({
+			where: {
+				nickname
+			},
+			select: {
+				nickname: true,
+				profilePic: true,
+				createdAt: true
+			}
+		})
+
+		if (!user) {
+			throw new NotFoundException(
+				'User not found. Please check the data.'
+			)
+		}
+
+		return user
+	}
+
 	public async findByEmail(email: string) {
 		const user = await this.prismaService.user.findUnique({
 			where: {

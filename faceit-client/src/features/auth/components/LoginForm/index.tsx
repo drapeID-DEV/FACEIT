@@ -13,6 +13,8 @@ import { useLoginMutation } from '@/store/api/authApi';
 import { useRouter } from 'next/navigation';
 import { notification } from '@/shared/utils/notifications';
 import { TApiError } from '@/shared/types/api/responses';
+import Link from 'next/link';
+import { useState } from 'react';
 
 export function LoginForm() {
 	const {
@@ -29,16 +31,25 @@ export function LoginForm() {
 	});
 
 	const router = useRouter();
-	const [login, { isLoading }] = useLoginMutation();
+	const [login, { isLoading, data }] = useLoginMutation();
+	const [isShowTwoFactor, setIsShowTwoFactor] = useState(false);
 
 	const onSubmit = async (values: TLoginSchema) => {
 		try {
 			const response = await login(values).unwrap();
 
-			router.push('/');
+			if ('message' in response) {
+				setIsShowTwoFactor(true);
 
+				notification.info(response.message);
+
+				return;
+			}
+
+			router.push('/');
 			reset();
 		} catch (error) {
+			console.log(error);
 			const err = error as TApiError;
 			notification.error(err.data.message);
 		}
@@ -51,20 +62,38 @@ export function LoginForm() {
 			backButtonHref="/auth/register"
 		>
 			<form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-				<Input
-					label="Email"
-					placeholder="name@mail.com"
-					{...register('email')}
-					error={errors.email?.message}
-				/>
-
-				<PasswordInput
-					label="Password"
-					placeholder="******"
-					{...register('password')}
-					error={errors.password?.message}
-				/>
-
+				{isShowTwoFactor && (
+					<Input
+						label="Code"
+						placeholder="123456"
+						{...register('code')}
+						error={errors.code?.message}
+					/>
+				)}
+				{!isShowTwoFactor && (
+					<>
+						<Input
+							label="Email"
+							placeholder="name@mail.com"
+							{...register('email')}
+							error={errors.email?.message}
+						/>
+						<div className="flex flex-col gap-4">
+							<PasswordInput
+								label="Password"
+								placeholder="******"
+								{...register('password')}
+								error={errors.password?.message}
+							/>
+							<Link
+								href="/auth/reset-password"
+								className="text-sm text-neutral-700 mr-auto hover:text-neutral-400 duration-200"
+							>
+								Forgot password?
+							</Link>
+						</div>
+					</>
+				)}
 				<button
 					disabled={isLoading}
 					className="bg-widget py-2 px-5 rounded-md hover:bg-amber-900 duration-200"

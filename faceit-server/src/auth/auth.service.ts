@@ -1,4 +1,5 @@
 import {
+	BadRequestException,
 	ConflictException,
 	forwardRef,
 	Inject,
@@ -31,11 +32,21 @@ export class AuthService {
 	) {}
 
 	public async register(req: Request, dto: RegisterDto) {
-		const isExists = await this.userService.findByEmail(dto.email)
+		const isEmailExists = await this.userService.findByEmail(dto.email)
 
-		if (isExists) {
+		if (isEmailExists) {
 			throw new ConflictException(
 				'Registration failed. A user with this email already exists. Please use a different email address or log in to the system.'
+			)
+		}
+
+		const isNicknameExists = await this.userService.findByNickname(
+			dto.email
+		)
+
+		if (isNicknameExists) {
+			throw new ConflictException(
+				'Registration failed. A user with this nickname already exists.'
 			)
 		}
 
@@ -66,25 +77,19 @@ export class AuthService {
 		}
 
 		if (!user.isVerified) {
-			throw new UnauthorizedException(
-				'Email not verified. Please verify your email address before logging in.'
+			await this.emailConfirmationService.sendVerificationToken(
+				user.email
+			)
+			throw new BadRequestException(
+				'Your email address has not been verified. Please check your inbox and verify your email address.'
 			)
 		}
 
 		const isValidPassword = await verify(user.password, dto.password)
 
 		if (!isValidPassword) {
-			throw new UnauthorizedException(
+			throw new BadRequestException(
 				'Incorrect password. Please try again or reset your password if you have forgotten it.'
-			)
-		}
-
-		if (!user.isVerified) {
-			await this.emailConfirmationService.sendVerificationToken(
-				user.email
-			)
-			throw new UnauthorizedException(
-				'Your email address has not been verified. Please check your inbox and verify your email address.'
 			)
 		}
 

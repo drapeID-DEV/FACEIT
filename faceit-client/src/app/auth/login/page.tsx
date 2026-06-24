@@ -6,6 +6,6 @@ export const metadata: Metadata = {
 	description: 'Login on FACEIT'
 };
 
-export default function Login() {
+export default function LoginPage() {
 	return <LoginForm />;
 }

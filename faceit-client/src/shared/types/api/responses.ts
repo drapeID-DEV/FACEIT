@@ -6,9 +6,9 @@ export interface IAccount {
 	provider: string;
 	refreshToken: string;
 	accessToken: string;
-	expiresAt: Date;
-	createdAt: Date;
-	updatedAt: Date;
+	expiresAt: string;
+	createdAt: string;
+	updatedAt: string;
 	user: IUser;
 	userId: string;
 }
@@ -34,6 +34,12 @@ export interface IUserData {
 
 export interface IInfoMessageRes {
 	message: string;
+}
+
+export interface IPlayerProfile {
+	nickname: string;
+	profilePic: string;
+	createdAt: string;
 }
 
 export type TApiError = FetchBaseQueryError & {
