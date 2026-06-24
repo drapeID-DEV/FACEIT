@@ -14,6 +14,7 @@ import { verify } from 'argon2'
 import { Request, Response } from 'express'
 
 import { EmailConfirmationService } from '@/auth/email-confirmation/email-confirmation.service'
+import { PrismaService } from '@/prisma/prisma.service'
 import { UserService } from '@/user/user.service'
 
 import { AuthMethod } from '../../generated/prisma'
@@ -27,6 +28,7 @@ export class AuthService {
 		private readonly userService: UserService,
 		private readonly configService: ConfigService,
 		private readonly twoFactorAuthService: TwoFactorAuthService,
+		private readonly prismaService: PrismaService,
 		@Inject(forwardRef(() => EmailConfirmationService))
 		private readonly emailConfirmationService: EmailConfirmationService
 	) {}
@@ -36,13 +38,15 @@ export class AuthService {
 
 		if (isEmailExists) {
 			throw new ConflictException(
-				'Registration failed. A user with this email already exists. Please use a different email address or log in to the system.'
+				'Registration failed. A user with this email already exists.'
 			)
 		}
 
-		const isNicknameExists = await this.userService.findByNickname(
-			dto.email
-		)
+		const isNicknameExists = await this.prismaService.user.findUnique({
+			where: {
+				nickname: dto.nickname
+			}
+		})
 
 		if (isNicknameExists) {
 			throw new ConflictException(
@@ -136,7 +140,6 @@ export class AuthService {
 
 			req.session.save(err => {
 				if (err) {
-					console.error('Session save error:', err)
 					return reject(
 						new InternalServerErrorException(
 							'Failed to save the session. Please check that the session settings are configured correctly.'

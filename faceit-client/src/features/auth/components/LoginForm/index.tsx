@@ -49,7 +49,6 @@ export function LoginForm() {
 			router.push('/');
 			reset();
 		} catch (error) {
-			console.log(error);
 			const err = error as TApiError;
 			notification.error(err.data.message);
 		}

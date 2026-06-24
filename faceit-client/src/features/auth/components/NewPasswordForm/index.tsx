@@ -55,7 +55,7 @@ export function NewPasswordForm() {
 
 	return (
 		<AuthWrapper
-			title="Login"
+			title="Create password"
 			backButtonLabel="Back to login"
 			backButtonHref="/auth/login"
 		>
