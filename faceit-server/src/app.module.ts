@@ -9,6 +9,7 @@ import { TwoFactorAuthModule } from './auth/two-factor-auth/two-factor-auth.modu
 import { IS_DEV_ENV } from './libs/common/utils/is-dev.util'
 import { PrismaModule } from './prisma/prisma.module'
 import { UserModule } from './user/user.module'
+import { CloudinaryModule } from './cloudinary/cloudinary.module';
 
 @Module({
 	imports: [
@@ -22,7 +23,8 @@ import { UserModule } from './user/user.module'
 		EmailConfirmationModule,
 		MailModule,
 		PasswordRecoveryModule,
-		TwoFactorAuthModule
+		TwoFactorAuthModule,
+		CloudinaryModule
 	]
 })
 export class AppModule {}

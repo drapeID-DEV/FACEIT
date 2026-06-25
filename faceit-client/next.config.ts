@@ -4,10 +4,15 @@ const nextConfig: NextConfig = {
 	/* config options here */
 	env: {
 		SERVER_URL: process.env.SERVER_URL
+	},
+	images: {
+		remotePatterns: [
+			{
+				protocol: 'https',
+				hostname: 'res.cloudinary.com'
+			}
+		]
 	}
-	// images: {
-
-	// }
 };
 
 export default nextConfig;

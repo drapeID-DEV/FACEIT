@@ -1,13 +1,20 @@
 import {
 	Body,
 	Controller,
+	FileTypeValidator,
 	Get,
 	HttpCode,
 	HttpStatus,
 	Param,
-	Patch
+	ParseFilePipe,
+	Patch,
+	Post,
+	UploadedFile,
+	UseInterceptors
 } from '@nestjs/common'
+import { FileInterceptor } from '@nestjs/platform-express'
 import { UserRole } from 'generated/prisma'
+import { memoryStorage, Multer } from 'multer'
 
 import { Authorization } from '@/auth/decorators/auth.decorator'
 import { Authorized } from '@/auth/decorators/authorized.decorator'
@@ -48,5 +55,32 @@ export class UserController {
 		@Body() dto: UpdateUserDto
 	) {
 		return this.userService.update(userId, dto)
+	}
+
+	@Authorization()
+	@HttpCode(HttpStatus.OK)
+	@Post('profile-picture')
+	@UseInterceptors(
+		FileInterceptor('avatar', {
+			storage: memoryStorage(),
+			limits: {
+				fileSize: 5 * 1024 * 1024
+			}
+		})
+	)
+	uploadAvatar(
+		@Authorized('id') userId: string,
+		@UploadedFile(
+			new ParseFilePipe({
+				validators: [
+					new FileTypeValidator({
+						fileType: /(jpg|jpeg|png|webp)$/
+					})
+				]
+			})
+		)
+		file: Express.Multer.File
+	) {
+		return this.userService.uploadAvatar(userId, file)
 	}
 }

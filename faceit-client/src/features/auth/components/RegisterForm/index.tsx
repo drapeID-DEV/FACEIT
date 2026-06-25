@@ -12,6 +12,7 @@ import { PasswordInput } from '@/shared/components/ui/PasswordInput';
 import { notification } from '@/shared/utils/notifications';
 import { useRegisterMutation } from '@/store/api/authApi';
 import { TApiError } from '@/shared/types/api/responses';
+import { FormButton } from '@/shared/components/ui/FormButton';
 
 export function RegisterForm() {
 	const {
@@ -76,13 +77,7 @@ export function RegisterForm() {
 					{...register('passwordRepeat')}
 					error={errors.passwordRepeat?.message}
 				/>
-				<button
-					className="bg-widget py-2 px-5 rounded-md hover:bg-amber-900 duration-200"
-					type="submit"
-					disabled={isLoading}
-				>
-					Register
-				</button>
+				<FormButton title="Register" disabled={isLoading} />
 			</form>
 		</AuthWrapper>
 	);

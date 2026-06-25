@@ -15,6 +15,7 @@ import { notification } from '@/shared/utils/notifications';
 import { TApiError } from '@/shared/types/api/responses';
 import Link from 'next/link';
 import { useState } from 'react';
+import { FormButton } from '@/shared/components/ui/FormButton';
 
 export function LoginForm() {
 	const {
@@ -93,13 +94,7 @@ export function LoginForm() {
 						</div>
 					</>
 				)}
-				<button
-					disabled={isLoading}
-					className="bg-widget py-2 px-5 rounded-md hover:bg-amber-900 duration-200"
-					type="submit"
-				>
-					Login
-				</button>
+				<FormButton title="Login" disabled={isLoading} />
 			</form>
 		</AuthWrapper>
 	);

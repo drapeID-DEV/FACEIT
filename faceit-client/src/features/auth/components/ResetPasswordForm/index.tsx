@@ -8,6 +8,7 @@ import { useResetPasswordMutation } from '@/store/api/authApi';
 import { notification } from '@/shared/utils/notifications';
 import { TApiError } from '@/shared/types/api/responses';
 import { ResetSchema, TResetSchema } from '../../schemes/reset-password.schema';
+import { FormButton } from '@/shared/components/ui/FormButton';
 
 export function ResetPasswordForm() {
 	const {
@@ -52,13 +53,7 @@ export function ResetPasswordForm() {
 					{...register('email')}
 					error={errors.email?.message}
 				/>
-				<button
-					disabled={isLoading}
-					className="bg-widget py-2 px-5 rounded-md hover:bg-amber-900 duration-200"
-					type="submit"
-				>
-					Reset
-				</button>
+				<FormButton title="Reset" disabled={isLoading} />
 			</form>
 		</AuthWrapper>
 	);

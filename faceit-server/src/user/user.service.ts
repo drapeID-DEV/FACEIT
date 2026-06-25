@@ -1,14 +1,22 @@
-import { Injectable, NotFoundException } from '@nestjs/common'
+import {
+	BadRequestException,
+	Injectable,
+	NotFoundException
+} from '@nestjs/common'
 import { AuthMethod } from '@prisma/client'
 import { hash } from 'argon2'
 
+import { CloudinaryService } from '@/cloudinary/cloudinary.service'
 import { PrismaService } from '@/prisma/prisma.service'
 
 import { UpdateUserDto } from './dto/update-user.dto'
 
 @Injectable()
 export class UserService {
-	public constructor(private readonly prismaService: PrismaService) {}
+	public constructor(
+		private readonly prismaService: PrismaService,
+		private readonly cloudinaryService: CloudinaryService
+	) {}
 
 	public async findById(id: string) {
 		const user = await this.prismaService.user.findUnique({
@@ -99,6 +107,38 @@ export class UserService {
 				email: dto.email,
 				nickname: dto.nickname,
 				isTwoFactorEnabled: dto.isTwoFactorEnabled
+			}
+		})
+
+		return updatedUser
+	}
+
+	public async uploadAvatar(userId: string, file: Express.Multer.File) {
+		const user = await this.findById(userId)
+
+		if (!user) {
+			throw new NotFoundException('User not found. Please try later!')
+		}
+
+		if (user.profilePictureId) {
+			await this.cloudinaryService.delete(user.profilePictureId)
+		}
+
+		const image = await this.cloudinaryService.upload(file)
+
+		if (!image) {
+			throw new BadRequestException(
+				'Something went wrong. Canno`t upload avatar.'
+			)
+		}
+
+		const updatedUser = await this.prismaService.user.update({
+			where: {
+				id: user.id
+			},
+			data: {
+				profilePic: image.secure_url,
+				profilePictureId: image.public_id
 			}
 		})
 

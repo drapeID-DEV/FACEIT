@@ -20,6 +20,7 @@ model User {
   
   nickname String @unique
   profilePic String?
+  profilePictureId String?
 
   role UserRole @default(REGULAR)
 

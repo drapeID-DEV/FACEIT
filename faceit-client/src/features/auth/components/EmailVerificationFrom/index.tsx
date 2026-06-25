@@ -1,5 +1,6 @@
 'use client';
 
+import { Loader } from '@/shared/components/ui/Loader';
 import { TApiError } from '@/shared/types/api/responses';
 import { notification } from '@/shared/utils/notifications';
 import { useNewVerificationMutation } from '@/store/api/authApi';
@@ -33,5 +34,5 @@ export default function EmailVerificationForm() {
 		verifyEmail();
 	}, [token, verify, router]);
 
-	return <div className="text-2xl text-white">Verifying email...</div>;
+	return <Loader />;
 }

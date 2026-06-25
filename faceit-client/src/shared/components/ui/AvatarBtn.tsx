@@ -1,6 +1,7 @@
 'use client';
 
 import { useGetMeQuery } from '@/store/api/userApi';
+import Image from 'next/image';
 import Link from 'next/link';
 
 interface BaseProps {
@@ -23,15 +24,16 @@ export function AvatarBtn({ onClick, isLink, href }: Props) {
 	const { data } = useGetMeQuery();
 
 	const avatar = data?.profilePic ? (
-		<img
+		<Image
 			src={data.profilePic}
 			alt={`${data.nickname} avatar`}
+			fill
 			className="w-full h-full object-cover"
 		/>
 	) : null;
 
 	const className =
-		'overflow-hidden w-10 h-10 border-2 border-transparent rounded-full hover:cursor-pointer hover:border-neutral-700 ' +
+		'relative overflow-hidden w-10 h-10 border-2 border-transparent rounded-full hover:cursor-pointer hover:border-neutral-700 ' +
 		(data?.profilePic ? '' : 'bg-amber-600');
 
 	return isLink ? (

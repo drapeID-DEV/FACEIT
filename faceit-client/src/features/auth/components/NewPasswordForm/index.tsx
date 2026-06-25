@@ -12,6 +12,7 @@ import {
 	NewPasswordSchema,
 	TNewPasswordSchema
 } from '../../schemes/new-password.schema';
+import { FormButton } from '@/shared/components/ui/FormButton';
 
 export function NewPasswordForm() {
 	const {
@@ -68,13 +69,7 @@ export function NewPasswordForm() {
 						error={errors.password?.message}
 					/>
 				</div>
-				<button
-					disabled={isLoading}
-					className="bg-widget py-2 px-5 rounded-md hover:bg-amber-900 duration-200"
-					type="submit"
-				>
-					Login
-				</button>
+				<FormButton title="Submit" disabled={isLoading} />
 			</form>
 		</AuthWrapper>
 	);

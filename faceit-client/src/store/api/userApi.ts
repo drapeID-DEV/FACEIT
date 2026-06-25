@@ -19,8 +19,21 @@ export const userApi = api.injectEndpoints({
 				body: data
 			}),
 			invalidatesTags: ['Profile']
+		}),
+		uploadAvatar: builder.mutation<void, FormData>({
+			query: (data) => ({
+				url: '/users/profile-picture',
+				method: 'POST',
+				body: data
+			}),
+			invalidatesTags: ['Profile']
 		})
 	})
 });
 
-export const { useGetMeQuery, useGetPublicProfileQuery } = userApi;
+export const {
+	useGetMeQuery,
+	useGetPublicProfileQuery,
+	useUpdateProfileMutation,
+	useUploadAvatarMutation
+} = userApi;

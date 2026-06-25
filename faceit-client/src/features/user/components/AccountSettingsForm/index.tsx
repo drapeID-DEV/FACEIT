@@ -1,22 +1,19 @@
 'use client';
 
-import { useForm } from 'react-hook-form';
-
-import {
-	RegisterSchema,
-	TRegisterSchema
-} from '@/features/auth/schemes/register.schema';
+import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Input } from '@/shared/components/ui/Input';
 import { notification } from '@/shared/utils/notifications';
-import { useRegisterMutation } from '@/store/api/authApi';
 import { TApiError } from '@/shared/types/api/responses';
 import { AuthWrapper } from '@/features/auth/components/AuthWrapper';
 import { SettingsSchema, TSettingsSchema } from '../../schemes/settings.schema';
-import { useGetMeQuery } from '@/store/api/userApi';
+import { useGetMeQuery, useUpdateProfileMutation } from '@/store/api/userApi';
+import { Loader } from '@/shared/components/ui/Loader';
+import { TwoFactorCard } from '@/shared/components/ui/TwoFactorCard';
 
 export function AccountSettingsForm() {
 	const { data, isLoading } = useGetMeQuery();
+	const [update, { isLoading: isLoadingUpdate }] = useUpdateProfileMutation();
 
 	const {
 		register,
@@ -34,17 +31,18 @@ export function AccountSettingsForm() {
 	});
 
 	const onSubmit = async (values: TSettingsSchema) => {
-		// try {
-		// 	const response = await registerUser(values).unwrap();
-		// 	reset();
-		// 	notification.info(response.message);
-		// } catch (error) {
-		// 	const err = error as TApiError;
-		// 	notification.error(err.data.message);
-		// }
+		try {
+			const response = await update(values).unwrap();
+			notification.info('Profile updated!');
+		} catch (error) {
+			const err = error as TApiError;
+			notification.error(err.data.message);
+		}
 	};
 
-	return (
+	return isLoading ? (
+		<Loader />
+	) : (
 		<AuthWrapper title="Update profile">
 			<form
 				onSubmit={handleSubmit(onSubmit)}
@@ -62,10 +60,20 @@ export function AccountSettingsForm() {
 					{...register('email')}
 					error={errors.email?.message}
 				/>
+				<Controller
+					control={control}
+					name="isTwoFactorEnabled"
+					render={({ field }) => (
+						<TwoFactorCard
+							checked={field.value}
+							onChange={field.onChange}
+						/>
+					)}
+				/>
 				<button
 					className="bg-widget py-2 px-5 rounded-md hover:bg-amber-900 duration-200"
 					type="submit"
-					disabled={isLoading}
+					disabled={isLoadingUpdate}
 				>
 					Update
 				</button>
