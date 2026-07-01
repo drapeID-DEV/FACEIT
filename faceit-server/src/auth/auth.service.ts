@@ -176,7 +176,7 @@ export class AuthService {
 		// 3. Если пользователя нет — создаем
 		if (!user) {
 			const nickname = await this.userService.generateNickname(
-				oauthUser.displayName
+				oauthUser.email
 			)
 
 			user = await this.userService.create({
