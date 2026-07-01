@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common'
 import { AuthMethod } from '@prisma/client'
 import { hash } from 'argon2'
+import { transliterate } from 'transliteration'
 
 import { CloudinaryService } from '@/cloudinary/cloudinary.service'
 import { PrismaService } from '@/prisma/prisma.service'
@@ -200,7 +201,10 @@ export class UserService {
 	}
 
 	public async generateNickname(displayName: string) {
-		const base = displayName.replace(/\s+/g, '').toLowerCase().slice(0, 20)
+		const base = transliterate(displayName)
+			.replace(/\s+/g, '')
+			.toLowerCase()
+			.slice(0, 20)
 
 		let nickname = base
 		let index = 1
