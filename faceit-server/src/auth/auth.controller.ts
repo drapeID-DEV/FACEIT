@@ -1,11 +1,13 @@
 import {
 	Body,
 	Controller,
+	Get,
 	HttpCode,
 	HttpStatus,
 	Post,
 	Req,
-	Res
+	Res,
+	UseGuards
 } from '@nestjs/common'
 import { Request, Response } from 'express'
 
@@ -14,6 +16,7 @@ import { EmailConfirmationService } from '@/auth/email-confirmation/email-confir
 import { AuthService } from './auth.service'
 import { LoginDto } from './dto/login.dto'
 import { RegisterDto } from './dto/register.dto'
+import { GoogleAuthGuard } from './guards/google.guard'
 
 @Controller('auth')
 export class AuthController {
@@ -41,5 +44,15 @@ export class AuthController {
 		@Res({ passthrough: true }) res: Response
 	) {
 		return this.authService.logout(req, res)
+	}
+
+	@Get('google')
+	@UseGuards(GoogleAuthGuard)
+	public async googleAuth() {}
+
+	@Get('google/callback')
+	@UseGuards(GoogleAuthGuard)
+	public async googleCallback(@Req() req: Request, @Res() res: Response) {
+		return this.authService.googleLogin(req, res)
 	}
 }

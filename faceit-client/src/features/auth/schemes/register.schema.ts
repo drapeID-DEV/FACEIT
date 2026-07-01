@@ -2,9 +2,14 @@ import * as z from 'zod';
 
 export const RegisterSchema = z
 	.object({
-		nickname: z.string().min(1, {
-			message: 'Input nickname'
-		}),
+		nickname: z
+			.string()
+			.min(1, {
+				message: 'Input nickname'
+			})
+			.max(20, {
+				message: 'Max length 20'
+			}),
 		email: z.string().email({
 			message: 'Invalid email'
 		}),

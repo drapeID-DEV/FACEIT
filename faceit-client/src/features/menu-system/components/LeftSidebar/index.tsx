@@ -11,7 +11,7 @@ export function LeftSidebar() {
 				className="inline-block mx-8 my-5 w-fit p-2 hover:bg-accent rounded-xl duration-300"
 				href={'/'}
 			>
-				<Image src={'/logo.webp'} alt="Logo" width={25} height={25} />
+				<Image src="/logo.webp" alt="Logo" width={25} height={25} />
 			</Link>
 			<Menu menuItems={MAIN_MENU} />
 			<MenuDevider />

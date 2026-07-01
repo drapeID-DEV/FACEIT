@@ -16,7 +16,7 @@ model User {
   id String @id @default(uuid())
 
   email String @unique
-  password String
+  password String?
   
   nickname String @unique
   profilePic String?
@@ -43,15 +43,19 @@ model Account {
   type String
   provider String
 
+  providerAccountId String @map("provider_account_id")
+
   refreshToken String? @map("refresh_token")
   accessToken String? @map("access_token")
-  expiresAt Int @map("expires_at")
+  expiresAt Int? @map("expires_at")
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  user User? @relation(fields: [userId], references: [id])
-  userId String? @map("user_id")
+  user User @relation(fields: [userId], references: [id])
+  userId String @map("user_id")
+
+  @@unique([provider, providerAccountId])
 
   @@map("accounts")
 }

@@ -20,6 +20,7 @@ import { UserService } from '@/user/user.service'
 import { AuthMethod } from '../../generated/prisma'
 import { LoginDto } from './dto/login.dto'
 import { RegisterDto } from './dto/register.dto'
+import { IOAuthUser } from './interfaces/oauth-user.interface'
 import { TwoFactorAuthService } from './two-factor-auth/two-factor-auth.service'
 
 @Injectable()
@@ -54,14 +55,14 @@ export class AuthService {
 			)
 		}
 
-		const newUser = await this.userService.create(
-			dto.email,
-			dto.password,
-			dto.nickname,
-			'',
-			AuthMethod.CREADENTIALS,
-			false
-		)
+		const newUser = await this.userService.create({
+			email: dto.email,
+			password: dto.password,
+			nickname: dto.nickname,
+			profilePic: null,
+			method: AuthMethod.CREADENTIALS,
+			isVerified: false
+		})
 
 		await this.emailConfirmationService.sendVerificationToken(newUser.email)
 
@@ -150,5 +151,57 @@ export class AuthService {
 				resolve({ user })
 			})
 		})
+	}
+
+	public async googleLogin(req: Request, res: Response) {
+		const oauthUser = req.user as IOAuthUser
+
+		// 1. Ищем существующий OAuth-аккаунт
+		const account = await this.userService.findAccount(
+			oauthUser.provider,
+			oauthUser.providerId
+		)
+
+		if (account) {
+			await this.saveSession(req, account.user)
+
+			return res.redirect(
+				this.configService.getOrThrow<string>('CLIENT_URL')
+			)
+		}
+
+		// 2. Ищем пользователя по email
+		let user = await this.userService.findByEmail(oauthUser.email)
+
+		// 3. Если пользователя нет — создаем
+		if (!user) {
+			const nickname = await this.userService.generateNickname(
+				oauthUser.displayName
+			)
+
+			user = await this.userService.create({
+				email: oauthUser.email,
+				nickname,
+				password: null,
+				profilePic: oauthUser.picture ?? null,
+				method: AuthMethod.GOOGLE,
+				isVerified: true
+			})
+		}
+
+		// 4. Создаем запись Account
+		await this.userService.createAccount(
+			user.id,
+			oauthUser.provider,
+			oauthUser.providerId,
+			oauthUser.accessToken,
+			oauthUser.refreshToken,
+			0
+		)
+
+		// 5. Создаем сессию
+		await this.saveSession(req, user)
+
+		return res.redirect(this.configService.getOrThrow<string>('CLIENT_URL'))
 	}
 }

@@ -2,6 +2,7 @@ import {
 	IsEmail,
 	IsNotEmpty,
 	IsString,
+	MaxLength,
 	MinLength,
 	Validate
 } from 'class-validator'
@@ -11,6 +12,9 @@ import { IsPasswordsMatchingConstraint } from '@/libs/common/decorators/is-passw
 export class RegisterDto {
 	@IsString({ message: 'Nickname must be a string.' })
 	@IsNotEmpty({ message: 'Nickname is required.' })
+	@MaxLength(20, {
+		message: 'Nickname must not exceed 20 characters.'
+	})
 	nickname: string
 
 	@IsString({ message: 'Email must be a string.' })

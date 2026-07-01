@@ -1,6 +1,5 @@
 'use client';
 
-import { AvatarPreview } from '@/shared/components/ui/AvatarPreview';
 import { FormButton } from '@/shared/components/ui/FormButton';
 import { Loader } from '@/shared/components/ui/Loader';
 import { notification } from '@/shared/utils/notifications';
@@ -12,6 +11,14 @@ export function AvatarUploader() {
 	const [preview, setPreview] = useState<string>('');
 	const [avatar, setAvatar] = useState<File | null>(null);
 	const [upload, { isLoading }] = useUploadAvatarMutation();
+
+	useEffect(() => {
+		return () => {
+			if (preview) {
+				URL.revokeObjectURL(preview);
+			}
+		};
+	}, [preview]);
 
 	const onDrop = useCallback(async (acceptedFiles: File[]) => {
 		const file = acceptedFiles[0];
@@ -45,14 +52,6 @@ export function AvatarUploader() {
 			notification.error('Failed to upload avatar.');
 		}
 	};
-
-	useEffect(() => {
-		return () => {
-			if (preview) {
-				URL.revokeObjectURL(preview);
-			}
-		};
-	}, [preview]);
 
 	const { getRootProps, getInputProps, isDragActive, fileRejections } =
 		useDropzone({

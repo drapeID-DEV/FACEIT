@@ -60,6 +60,7 @@ export function LoginForm() {
 			title="Login"
 			backButtonLabel="Don't have account?"
 			backButtonHref="/auth/register"
+			isShowSocial
 		>
 			<form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
 				{isShowTwoFactor && (

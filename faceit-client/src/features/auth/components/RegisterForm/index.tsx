@@ -51,6 +51,7 @@ export function RegisterForm() {
 			title="Register"
 			backButtonLabel="Have account?"
 			backButtonHref="/auth/login"
+			isShowSocial
 		>
 			<form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
 				<Input

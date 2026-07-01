@@ -71,22 +71,22 @@ export class UserService {
 		return user
 	}
 
-	public async create(
-		email: string,
-		password: string,
-		nickname: string,
-		profilePic: string,
-		method: AuthMethod,
+	public async create(dto: {
+		email: string
+		password?: string | null
+		nickname: string
+		profilePic?: string | null
+		method: AuthMethod
 		isVerified: boolean
-	) {
+	}) {
 		const user = this.prismaService.user.create({
 			data: {
-				email,
-				password: password ? await hash(password) : '',
-				nickname,
-				profilePic,
-				method,
-				isVerified
+				email: dto.email,
+				password: dto.password ? await hash(dto.password) : null,
+				nickname: dto.nickname,
+				profilePic: dto.profilePic,
+				method: dto.method,
+				isVerified: dto.isVerified
 			},
 			include: {
 				accounts: true
@@ -99,7 +99,28 @@ export class UserService {
 	public async update(userId: string, dto: UpdateUserDto) {
 		const user = await this.findById(userId)
 
-		const updatedUser = await this.prismaService.user.update({
+		const existingUser = await this.prismaService.user.findFirst({
+			where: {
+				OR: [{ email: dto.email }, { nickname: dto.nickname }],
+				NOT: {
+					id: user.id
+				}
+			}
+		})
+
+		if (existingUser) {
+			if (existingUser.email === dto.email) {
+				throw new BadRequestException('This email is already in use.')
+			}
+
+			if (existingUser.nickname === dto.nickname) {
+				throw new BadRequestException(
+					'This nickname is already in use.'
+				)
+			}
+		}
+
+		return this.prismaService.user.update({
 			where: {
 				id: user.id
 			},
@@ -109,8 +130,6 @@ export class UserService {
 				isTwoFactorEnabled: dto.isTwoFactorEnabled
 			}
 		})
-
-		return updatedUser
 	}
 
 	public async uploadAvatar(userId: string, file: Express.Multer.File) {
@@ -143,5 +162,61 @@ export class UserService {
 		})
 
 		return updatedUser
+	}
+
+	public async findAccount(provider: string, providerAccountId: string) {
+		return this.prismaService.account.findUnique({
+			where: {
+				provider_providerAccountId: {
+					provider,
+					providerAccountId
+				}
+			},
+			include: {
+				user: true
+			}
+		})
+	}
+
+	public async createAccount(
+		userId: string,
+		provider: string,
+		providerAccountId: string,
+		accessToken?: string,
+		refreshToken?: string | undefined,
+		expiresAt?: number
+	) {
+		return this.prismaService.account.create({
+			data: {
+				userId,
+				type: 'oauth',
+				provider,
+				providerAccountId,
+				accessToken,
+				refreshToken,
+				expiresAt
+			}
+		})
+	}
+
+	public async generateNickname(displayName: string) {
+		const base = displayName.replace(/\s+/g, '').toLowerCase().slice(0, 20)
+
+		let nickname = base
+		let index = 1
+
+		while (
+			await this.prismaService.user.findUnique({
+				where: { nickname }
+			})
+		) {
+			const suffix = index.toString()
+
+			nickname = base.slice(0, 20 - suffix.length) + suffix
+
+			index++
+		}
+
+		return nickname
 	}
 }
