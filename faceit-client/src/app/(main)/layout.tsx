@@ -18,18 +18,24 @@ export default function MainLayout({
 	//if the request throws 401 status, the server side will remove session cookie
 	const { isLoading, isError } = useGetMeQuery();
 
-	if (isLoading || isError) {
+	if (isLoading) {
 		return <Loader />;
 	}
 
+	if (isError) {
+		router.push('/auth/login');
+	}
+
 	return (
-		<>
-			<LeftSidebar />
-			<div className="relative rounded-2xl bg-neutral-950 h-full w-full box-border flex text-5xl overflow-auto">
-				{children}
-				<PopupMenu />
-			</div>
-			<RightSidebar />
-		</>
+		!isError && (
+			<>
+				<LeftSidebar />
+				<div className="relative rounded-2xl bg-neutral-950 h-full w-full box-border flex text-5xl overflow-auto">
+					{children}
+					<PopupMenu />
+				</div>
+				<RightSidebar />
+			</>
+		)
 	);
 }

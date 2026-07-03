@@ -7,8 +7,8 @@ export const RegisterSchema = z
 			.min(1, {
 				message: 'Input nickname'
 			})
-			.max(20, {
-				message: 'Max length 20'
+			.max(15, {
+				message: 'Max length 15'
 			}),
 		email: z.string().email({
 			message: 'Invalid email'
