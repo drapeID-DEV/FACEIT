@@ -16,12 +16,15 @@ import { EmailConfirmationService } from '@/auth/email-confirmation/email-confir
 import { AuthService } from './auth.service'
 import { LoginDto } from './dto/login.dto'
 import { RegisterDto } from './dto/register.dto'
+import { DiscordAuthGuard } from './guards/discord.guard'
 import { GoogleAuthGuard } from './guards/google.guard'
+import { OAuthService } from './oauth.service'
 
 @Controller('auth')
 export class AuthController {
 	public constructor(
 		private readonly authService: AuthService,
+		private readonly oauthService: OAuthService,
 		private readonly emailConfirmationService: EmailConfirmationService
 	) {}
 
@@ -53,6 +56,16 @@ export class AuthController {
 	@Get('google/callback')
 	@UseGuards(GoogleAuthGuard)
 	public async googleCallback(@Req() req: Request, @Res() res: Response) {
-		return this.authService.googleLogin(req, res)
+		return this.oauthService.handleOAuthLogin(req, res)
+	}
+
+	@Get('discord')
+	@UseGuards(DiscordAuthGuard)
+	discord() {}
+
+	@Get('discord/callback')
+	@UseGuards(DiscordAuthGuard)
+	discordCallback(@Req() req: Request, @Res() res: Response) {
+		return this.oauthService.handleOAuthLogin(req, res)
 	}
 }

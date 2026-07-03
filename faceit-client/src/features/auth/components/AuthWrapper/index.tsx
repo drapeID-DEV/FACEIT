@@ -27,6 +27,11 @@ export function AuthWrapper({
 							imageURL="/google.webp"
 							authHref="auth/google"
 						/>
+						<SocialButton
+							title="Discord"
+							imageURL="/discord.png"
+							authHref="auth/discord"
+						/>
 					</div>
 					<div className="h-1 bg-accent w-full rounded-full"></div>
 				</>

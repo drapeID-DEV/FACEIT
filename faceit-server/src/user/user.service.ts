@@ -3,12 +3,12 @@ import {
 	Injectable,
 	NotFoundException
 } from '@nestjs/common'
-import { AuthMethod } from '@prisma/client'
 import { hash } from 'argon2'
 
 import { CloudinaryService } from '@/cloudinary/cloudinary.service'
 import { PrismaService } from '@/prisma/prisma.service'
 
+import { AuthMethod } from '../../generated/prisma'
 import { UpdateUserDto } from './dto/update-user.dto'
 
 @Injectable()

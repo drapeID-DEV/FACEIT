@@ -79,6 +79,7 @@ enum UserRole {
 enum AuthMethod {
   CREADENTIALS
   GOOGLE
+  DISCORD
 }
 
 enum TokenType {

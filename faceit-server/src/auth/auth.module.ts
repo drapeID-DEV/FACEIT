@@ -6,6 +6,8 @@ import { UserModule } from '@/user/user.module'
 
 import { AuthController } from './auth.controller'
 import { AuthService } from './auth.service'
+import { OAuthService } from './oauth.service'
+import { DiscordStrategy } from './strategies/discord.strategy'
 import { GoogleStrategy } from './strategies/google.strategy'
 import { TwoFactorAuthModule } from './two-factor-auth/two-factor-auth.module'
 
@@ -19,7 +21,7 @@ import { TwoFactorAuthModule } from './two-factor-auth/two-factor-auth.module'
 		})
 	],
 	controllers: [AuthController],
-	providers: [AuthService, GoogleStrategy],
+	providers: [AuthService, OAuthService, GoogleStrategy, DiscordStrategy],
 	exports: [AuthService]
 })
 export class AuthModule {}
