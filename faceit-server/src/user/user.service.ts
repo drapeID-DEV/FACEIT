@@ -215,7 +215,7 @@ export class UserService {
 		) {
 			const suffix = index.toString()
 
-			nickname = base.slice(0, 20 - suffix.length) + suffix
+			nickname = base.slice(0, 15 - suffix.length) + suffix
 
 			index++
 		}

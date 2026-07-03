@@ -151,4 +151,17 @@ export class AuthService {
 		})
 	}
 
+	public async destroySession(req: Request, res: Response): Promise<void> {
+		return new Promise((resolve, reject) => {
+			req.session.destroy(err => {
+				if (err) {
+					return reject(err)
+				}
+
+				res.clearCookie(this.configService.getOrThrow('SESSION_NAME'))
+
+				resolve()
+			})
+		})
+	}
 }

@@ -12,8 +12,8 @@ import { IsPasswordsMatchingConstraint } from '@/libs/common/decorators/is-passw
 export class RegisterDto {
 	@IsString({ message: 'Nickname must be a string.' })
 	@IsNotEmpty({ message: 'Nickname is required.' })
-	@MaxLength(20, {
-		message: 'Nickname must not exceed 20 characters.'
+	@MaxLength(15, {
+		message: 'Nickname must not exceed 15 characters.'
 	})
 	nickname: string
 
