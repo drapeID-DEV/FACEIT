@@ -22,6 +22,13 @@ model User {
   profilePic String?
   profilePictureId String?
 
+  elo Int @default(1000)
+  wins Int @default(0)
+  losses Int @default(0)
+
+  matchParticipants MatchParticipant[]
+  eloHistory EloHistory[]
+
   role UserRole @default(REGULAR)
 
   isVerified Boolean @default(false) @map("isverified")
@@ -71,6 +78,51 @@ model Token {
   @@map("tokens")
 }
 
+model Match {
+  id String @id @default(uuid())
+
+  status MatchStatus
+  eloHistory EloHistory[]
+
+  createdAt DateTime @default(now())
+
+  participants MatchParticipant[]
+}
+
+model MatchParticipant {
+  id String @id @default(uuid())
+
+  match Match @relation(fields: [matchId], references: [id])
+  matchId String
+
+  user User @relation(fields: [userId], references: [id])
+  userId String
+
+  team Int
+
+  isWinner Boolean
+
+  eloBefore Int
+  eloAfter Int
+}
+
+model EloHistory {
+  id String @id @default(uuid())
+
+  user User @relation(fields: [userId], references: [id])
+  userId String
+
+  match Match @relation(fields: [matchId], references: [id])
+  matchId String
+
+  change Int
+
+  eloBefore Int
+  eloAfter Int
+
+  createdAt DateTime @default(now())
+}
+
 enum UserRole {
   REGULAR
   ADMIN
@@ -86,4 +138,12 @@ enum TokenType {
   VERIFICATION
   TWO_FACTOR
   PASSWORD_RESET
+}
+
+enum MatchStatus {
+  SEARCHING
+  READY
+  LIVE
+  FINISHED
+  CANCELLED
 }

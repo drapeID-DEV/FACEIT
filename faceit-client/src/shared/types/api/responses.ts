@@ -22,6 +22,7 @@ export interface IUserData {
 	email: string;
 	password: string;
 	nickname: string;
+	elo: number;
 	profilePic: string;
 	role: string;
 	isVerified: boolean;
