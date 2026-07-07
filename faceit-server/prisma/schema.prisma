@@ -87,6 +87,8 @@ model Match {
   createdAt DateTime @default(now())
 
   participants MatchParticipant[]
+
+  @@map("matches")
 }
 
 model MatchParticipant {
@@ -104,6 +106,8 @@ model MatchParticipant {
 
   eloBefore Int
   eloAfter Int
+
+  @@map("match_participants")
 }
 
 model EloHistory {
@@ -115,12 +119,14 @@ model EloHistory {
   match Match @relation(fields: [matchId], references: [id])
   matchId String
 
-  change Int
+  eloChange Int
 
   eloBefore Int
   eloAfter Int
 
   createdAt DateTime @default(now())
+
+  @@map("elo_history")
 }
 
 enum UserRole {
