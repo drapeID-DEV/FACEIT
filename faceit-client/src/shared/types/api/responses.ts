@@ -1,4 +1,5 @@
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
+import { IMatch, TMatchType } from '../match';
 
 export interface IAccount {
 	id: string;
@@ -41,6 +42,19 @@ export interface IPlayerProfile {
 	nickname: string;
 	profilePic: string;
 	createdAt: string;
+}
+
+export interface ICurrentMatchResponse {
+	hasActiveMatch: boolean;
+	match: IMatch | null;
+}
+
+export interface IQueueStatusResponse {
+	inQueue: boolean;
+	queuePosition: number;
+	queueSize: number;
+	matchType: TMatchType;
+	joinedAt: string;
 }
 
 export type TApiError = FetchBaseQueryError & {

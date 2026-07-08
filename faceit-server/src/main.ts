@@ -7,6 +7,7 @@ import session from 'express-session'
 import ms, { StringValue } from 'ms'
 import { createClient } from 'redis'
 
+import { SocketIoAdapter } from './adapters/socket-io.adapter'
 import { AppModule } from './app.module'
 import { parseBoolean } from './libs/common/utils/parse-boolean.util'
 
@@ -28,31 +29,33 @@ async function bootstrap() {
 		})
 	)
 
-	app.use(
-		session({
-			secret: config.getOrThrow<string>('SESSION_SECRET'),
-			name: config.getOrThrow<string>('SESSION_NAME'),
-			resave: true,
-			saveUninitialized: false,
-			cookie: {
-				domain: config.getOrThrow<string>('SESSION_DOMAIN'),
-				maxAge: ms(config.getOrThrow<StringValue>('SESSION_MAX_AGE')),
-				httpOnly: parseBoolean(config.getOrThrow('SESSION_HTTP_ONLY')),
-				secure: parseBoolean(config.getOrThrow('SESSION_SECURE')),
-				sameSite: 'lax'
-			},
-			store: new RedisStore({
-				client: redisClient,
-				prefix: config.getOrThrow('SESSION_FOLDER')
-			})
+	const sessionMiddleware = session({
+		secret: config.getOrThrow<string>('SESSION_SECRET'),
+		name: config.getOrThrow<string>('SESSION_NAME'),
+		resave: true,
+		saveUninitialized: false,
+		cookie: {
+			domain: config.getOrThrow<string>('SESSION_DOMAIN'),
+			maxAge: ms(config.getOrThrow<StringValue>('SESSION_MAX_AGE')),
+			httpOnly: parseBoolean(config.getOrThrow('SESSION_HTTP_ONLY')),
+			secure: parseBoolean(config.getOrThrow('SESSION_SECURE')),
+			sameSite: 'lax'
+		},
+		store: new RedisStore({
+			client: redisClient,
+			prefix: config.getOrThrow('SESSION_FOLDER')
 		})
-	)
+	})
+
+	app.use(sessionMiddleware)
 
 	app.enableCors({
 		origin: config.getOrThrow<string>('ALLOWED_ORIGIN'),
 		credentials: true,
 		exposedHeaders: ['set-cookie']
 	})
+
+	app.useWebSocketAdapter(new SocketIoAdapter(app, sessionMiddleware))
 
 	await app.listen(config.getOrThrow<number>('APPLICATION_PORT'))
 }

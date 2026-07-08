@@ -1,3 +1,4 @@
+import { QueueControlBtn } from '@/features/matchmaking/components/QueueControlBtn';
 import { Metadata } from 'next';
 
 interface Props {}
@@ -8,5 +9,5 @@ export const metadata: Metadata = {
 };
 
 export default function MatchmakingPage({}: Props) {
-	return <div>Matches</div>;
+	return <QueueControlBtn />;
 }

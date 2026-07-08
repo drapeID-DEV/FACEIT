@@ -30,6 +30,6 @@ const appBaseQuery: BaseQueryFn<
 export const api = createApi({
 	reducerPath: 'api',
 	baseQuery: appBaseQuery,
-	tagTypes: ['Profile'],
+	tagTypes: ['Profile', 'CurrentMatch', 'Queue'],
 	endpoints: () => ({})
 });

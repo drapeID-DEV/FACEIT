@@ -3,7 +3,7 @@ import { IMenuItem } from '@/shared/types/menu';
 export const MAIN_MENU: IMenuItem[] = [
 	{
 		title: 'Play',
-		link: '/matchmaking',
+		link: '/matches',
 		icon: 'play'
 	},
 	{

@@ -23,11 +23,10 @@ model User {
   profilePictureId String?
 
   elo Int @default(1000)
-  wins Int @default(0)
-  losses Int @default(0)
 
   matchParticipants MatchParticipant[]
   eloHistory EloHistory[]
+  playerStats PlayerStats?
 
   role UserRole @default(REGULAR)
 
@@ -157,6 +156,27 @@ model EloHistory {
 
   @@index([userId, createdAt])
   @@map("elo_history")
+}
+
+model PlayerStats {
+  id String @id @default(uuid())
+
+  user User @relation(fields: [userId], references: [id])
+  userId String @unique
+
+  totalMatches Int @default(0)
+  totalWins Int @default(0)
+  totalLosses Int @default(0)
+
+  totalKills Int @default(0)
+  totalDeaths Int @default(0)
+  totalAssists Int @default(0)
+  totalHeadshots Int @default(0)
+  totalMvpRounds Int @default(0)
+
+  updatedAt DateTime @updatedAt
+
+  @@map("player_stats")
 }
 
 enum UserRole {

@@ -6,10 +6,12 @@ import { EmailConfirmationModule } from './auth/email-confirmation/email-confirm
 import { MailModule } from './auth/mail/mail.module'
 import { PasswordRecoveryModule } from './auth/password-recovery/password-recovery.module'
 import { TwoFactorAuthModule } from './auth/two-factor-auth/two-factor-auth.module'
+import { CloudinaryModule } from './cloudinary/cloudinary.module'
 import { IS_DEV_ENV } from './libs/common/utils/is-dev.util'
+import { MatchmakingModule } from './matchmaking/matchmaking.module'
 import { PrismaModule } from './prisma/prisma.module'
 import { UserModule } from './user/user.module'
-import { CloudinaryModule } from './cloudinary/cloudinary.module';
+import { MatchModule } from './match/match.module';
 
 @Module({
 	imports: [
@@ -24,7 +26,9 @@ import { CloudinaryModule } from './cloudinary/cloudinary.module';
 		MailModule,
 		PasswordRecoveryModule,
 		TwoFactorAuthModule,
-		CloudinaryModule
+		CloudinaryModule,
+		MatchmakingModule,
+		MatchModule
 	]
 })
 export class AppModule {}

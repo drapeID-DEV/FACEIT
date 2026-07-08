@@ -3,6 +3,7 @@ import '../globals.css';
 import { LeftSidebar } from '@/features/menu-system/components/LeftSidebar';
 import { RightSidebar } from '@/features/menu-system/components/RightSidebar';
 import { PopupMenu } from '@/features/popups/components/PopupMenu';
+import { SocketProvider } from '@/providers/SocketProvider';
 import { Loader } from '@/shared/components/ui/Loader';
 import { useGetMeQuery } from '@/store/api/userApi';
 import { useRouter } from 'next/navigation';
@@ -28,14 +29,14 @@ export default function MainLayout({
 
 	return (
 		!isError && (
-			<>
+			<SocketProvider>
 				<LeftSidebar />
 				<div className="relative rounded-2xl bg-neutral-950 h-full w-full box-border flex text-5xl overflow-auto">
 					{children}
 					<PopupMenu />
 				</div>
 				<RightSidebar />
-			</>
+			</SocketProvider>
 		)
 	);
 }
