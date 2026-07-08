@@ -17,7 +17,7 @@ model User {
 
   email String @unique
   password String?
-  
+
   nickname String @unique
   profilePic String?
   profilePictureId String?
@@ -41,6 +41,7 @@ model User {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
+  @@index([elo])
   @@map("users")
 }
 
@@ -81,13 +82,29 @@ model Token {
 model Match {
   id String @id @default(uuid())
 
+  matchType MatchType
+  maxPlayersPerTeam Int
+
   status MatchStatus
+
+  winnerTeam Int?
+
+  team1Score Int @default(0)
+  team2Score Int @default(0)
+
+  cancelledBy String?
+  cancellationReason String?
+
   eloHistory EloHistory[]
 
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  finishedAt DateTime?
 
   participants MatchParticipant[]
 
+  @@index([status])
+  @@index([createdAt])
   @@map("matches")
 }
 
@@ -107,6 +124,16 @@ model MatchParticipant {
   eloBefore Int
   eloAfter Int
 
+  kills Int @default(0)
+  deaths Int @default(0)
+  assists Int @default(0)
+
+  headshots Int @default(0)
+  mvpRounds Int @default(0)
+
+  createdAt DateTime @default(now())
+
+  @@unique([matchId, userId])
   @@map("match_participants")
 }
 
@@ -124,8 +151,11 @@ model EloHistory {
   eloBefore Int
   eloAfter Int
 
+  calculationMethod String @default("fixed_25")
+
   createdAt DateTime @default(now())
 
+  @@index([userId, createdAt])
   @@map("elo_history")
 }
 
@@ -152,4 +182,9 @@ enum MatchStatus {
   LIVE
   FINISHED
   CANCELLED
+}
+
+enum MatchType {
+  ONE_VS_ONE
+  TEAM
 }
