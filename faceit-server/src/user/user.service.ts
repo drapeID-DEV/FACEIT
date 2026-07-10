@@ -79,21 +79,38 @@ export class UserService {
 		method: AuthMethod
 		isVerified: boolean
 	}) {
-		const user = this.prismaService.user.create({
-			data: {
-				email: dto.email,
-				password: dto.password ? await hash(dto.password) : null,
-				nickname: dto.nickname,
-				profilePic: dto.profilePic,
-				method: dto.method,
-				isVerified: dto.isVerified
-			},
-			include: {
-				accounts: true
-			}
-		})
+		return this.prismaService.$transaction(async tx => {
+			const user = await tx.user.create({
+				data: {
+					email: dto.email,
+					password: dto.password ? await hash(dto.password) : null,
+					nickname: dto.nickname,
+					profilePic: dto.profilePic,
+					method: dto.method,
+					isVerified: dto.isVerified
+				},
+				include: {
+					accounts: true
+				}
+			})
 
-		return user
+			// Auto-create PlayerStats with all zeros
+			await tx.playerStats.create({
+				data: {
+					userId: user.id,
+					totalMatches: 0,
+					totalWins: 0,
+					totalLosses: 0,
+					totalKills: 0,
+					totalDeaths: 0,
+					totalAssists: 0,
+					totalHeadshots: 0,
+					totalMvpRounds: 0
+				}
+			})
+
+			return user
+		})
 	}
 
 	public async update(userId: string, dto: UpdateUserDto) {

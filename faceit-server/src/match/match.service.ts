@@ -7,7 +7,6 @@ import { MatchStatus, MatchType } from 'generated/prisma'
 
 import { EloService } from '@/elo/elo.service'
 import { PrismaService } from '@/prisma/prisma.service'
-import { UserService } from '@/user/user.service'
 
 import { matchWithParticipantsInclude } from './constants/match.constants'
 import { FinishMatchDto } from './dto/finish-match.dto'
@@ -211,7 +210,7 @@ export class MatchService {
 	}
 
 	public async findActiveMatchByUserId(userId: string) {
-		return this.prisma.match.findFirst({
+		const match = this.prisma.match.findFirst({
 			where: {
 				status: {
 					in: [MatchStatus.READY, MatchStatus.LIVE]
@@ -224,5 +223,7 @@ export class MatchService {
 			},
 			include: matchWithParticipantsInclude
 		})
+
+		return match
 	}
 }

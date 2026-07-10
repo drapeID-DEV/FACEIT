@@ -4,7 +4,6 @@ import {
 	WebSocketGateway,
 	WebSocketServer
 } from '@nestjs/websockets'
-import { Match } from 'generated/prisma'
 import { Server, Socket } from 'socket.io'
 
 import { MatchWithParticipants } from '@/match/constants/match.constants'
@@ -24,7 +23,7 @@ export class MatchmakingGateway
 	server: Server
 
 	handleConnection(client: Socket) {
-		const session = (client.request as any).session
+		const session = client.request.session
 
 		if (!session?.userId) {
 			client.disconnect()

@@ -31,7 +31,7 @@ export interface IMatchParticipant {
 	user: {
 		id: string;
 		nickname: string;
-		profilePic: string | null;
+		profilePic: string;
 		elo: number;
 	};
 }

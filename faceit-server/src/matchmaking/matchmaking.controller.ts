@@ -17,13 +17,7 @@ export class MatchmakingController {
 	@Authorization()
 	@Post('queue/join')
 	async joinQueue(@Req() req: Request, @Body() dto: JoinQueueDto) {
-		const userId = req.session.userId
-
-		if (!userId) {
-			return { message: 'Unauthorized' }
-		}
-
-		const user = await this.userService.findById(userId)
+		const user = await this.userService.findById(req.session.userId)
 
 		return this.matchmakingService.joinQueue({
 			userId: user.id,
@@ -42,12 +36,6 @@ export class MatchmakingController {
 	@Authorization()
 	@Get('queue/status')
 	async getQueueStatus(@Req() req: Request) {
-		const userId = req.session.userId
-
-		if (!userId) {
-			return { inQueue: false }
-		}
-
-		return this.matchmakingService.getQueueStatus(userId)
+		return this.matchmakingService.getQueueStatus(req.session.userId)
 	}
 }

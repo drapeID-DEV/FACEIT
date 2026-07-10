@@ -57,6 +57,20 @@ export interface IQueueStatusResponse {
 	joinedAt: string;
 }
 
+export interface IPlayerStats {
+	id: string;
+	userId: string;
+	totalMatches: number;
+	totalWins: number;
+	totalLosses: number;
+	totalKills: number;
+	totalDeaths: number;
+	totalAssists: number;
+	totalHeadshots: number;
+	totalMvpRounds: number;
+	updatedAt: string;
+}
+
 export type TApiError = FetchBaseQueryError & {
 	data: {
 		statusCode: number;
