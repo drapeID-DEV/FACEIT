@@ -14,8 +14,6 @@ export function LeaveQueueBtn({ joinedAt }: Props) {
 	const handleLeaveQueue = async () => {
 		try {
 			const response = await leaveQueue().unwrap();
-
-			if (response.message) notification.info(response.message);
 		} catch (error) {
 			const err = error as TApiError;
 			notification.error(err.data.message);

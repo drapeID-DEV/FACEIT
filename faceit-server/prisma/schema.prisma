@@ -185,7 +185,7 @@ enum UserRole {
 }
 
 enum AuthMethod {
-  CREADENTIALS
+  CREDENTIALS
   GOOGLE
   DISCORD
 }

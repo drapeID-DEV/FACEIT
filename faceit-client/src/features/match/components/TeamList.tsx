@@ -17,7 +17,10 @@ export function TeamList({ team }: Props) {
 	return (
 		<ul className="w-full max-w-80 m-0 p-0 list-none">
 			{team?.map((participiant) => (
-				<PlayerMatchCard player={participiant}></PlayerMatchCard>
+				<PlayerMatchCard
+					key={participiant.id}
+					player={participiant}
+				></PlayerMatchCard>
 			))}
 		</ul>
 	);

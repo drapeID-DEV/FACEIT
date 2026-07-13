@@ -16,8 +16,6 @@ export function JoinQueueBtn({ matchType }: Props) {
 			const response = await joinQueue({
 				matchType
 			}).unwrap();
-
-			if (response.message) notification.info(response.message);
 		} catch (error) {
 			const err = error as TApiError;
 			notification.error(err.data.message);

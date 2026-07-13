@@ -40,6 +40,8 @@ export function AccountSettingsForm() {
 		}
 	};
 
+	const isCredentialsMethod = data?.method === 'CREDENTIALS';
+
 	return isLoading ? (
 		<Loader />
 	) : (
@@ -60,16 +62,18 @@ export function AccountSettingsForm() {
 					{...register('email')}
 					error={errors.email?.message}
 				/>
-				<Controller
-					control={control}
-					name="isTwoFactorEnabled"
-					render={({ field }) => (
-						<TwoFactorCard
-							checked={field.value}
-							onChange={field.onChange}
-						/>
-					)}
-				/>
+				{isCredentialsMethod && (
+					<Controller
+						control={control}
+						name="isTwoFactorEnabled"
+						render={({ field }) => (
+							<TwoFactorCard
+								checked={field.value}
+								onChange={field.onChange}
+							/>
+						)}
+					/>
+				)}
 				<button
 					className="bg-widget py-2 px-5 rounded-md hover:bg-amber-900 duration-200"
 					type="submit"

@@ -58,7 +58,7 @@ export class AuthService {
 			password: dto.password,
 			nickname: dto.nickname,
 			profilePic: null,
-			method: AuthMethod.CREADENTIALS,
+			method: AuthMethod.CREDENTIALS,
 			isVerified: false
 		})
 
