@@ -1,22 +1,14 @@
 import {
-	ICurrentMatchResponse,
+	ICurrentMatchRes,
 	IInfoMessageRes,
-	IQueueStatusResponse
+	IQueueStatusRes
 } from '@/shared/types/api/responses';
 import { api } from './baseApi';
 import { TMatchType } from '@/shared/types/match';
 
 export const matchmakingApi = api.injectEndpoints({
 	endpoints: (builder) => ({
-		// updateProfile: builder.mutation<void, TSettingsSchema>({
-		// 	query: (data) => ({
-		// 		url: '/users/profile',
-		// 		method: 'PATCH',
-		// 		body: data
-		// 	}),
-		// 	invalidatesTags: ['Profile']
-		// }),
-		getCurrentMatch: builder.query<ICurrentMatchResponse, void>({
+		getCurrentMatch: builder.query<ICurrentMatchRes, void>({
 			query: () => '/match/current',
 			providesTags: ['CurrentMatch']
 		}),
@@ -37,7 +29,7 @@ export const matchmakingApi = api.injectEndpoints({
 			}),
 			invalidatesTags: ['Queue']
 		}),
-		getQueueStatus: builder.query<IQueueStatusResponse, void>({
+		getQueueStatus: builder.query<IQueueStatusRes, void>({
 			query: () => '/matchmaking/queue/status',
 			providesTags: ['Queue']
 		})

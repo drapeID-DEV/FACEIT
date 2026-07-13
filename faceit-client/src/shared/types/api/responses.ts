@@ -1,74 +1,32 @@
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 import { IMatch, TMatchType } from '../match';
-
-export interface IAccount {
-	id: string;
-	type: string;
-	provider: string;
-	refreshToken: string;
-	accessToken: string;
-	expiresAt: string;
-	createdAt: string;
-	updatedAt: string;
-	user: IUser;
-	userId: string;
-}
-
-export interface IUser {
-	user: IUserData;
-}
-
-export interface IUserData {
-	id: string;
-	email: string;
-	password: string;
-	nickname: string;
-	elo: number;
-	profilePic: string;
-	role: string;
-	isVerified: boolean;
-	isTwoFactorEnabled: boolean;
-	method: string;
-	createdAt: string;
-	updatedAt: string;
-	accounts: any[];
-}
+import { IPlayerStats } from '../user';
 
 export interface IInfoMessageRes {
 	message: string;
 }
 
-export interface IPlayerProfile {
+export interface IPlayerProfileRes {
+	id: string;
 	nickname: string;
 	profilePic: string;
+	elo: number;
 	createdAt: string;
+	updatedAt: string;
+	playerStats: IPlayerStats;
 }
 
-export interface ICurrentMatchResponse {
+export interface ICurrentMatchRes {
 	hasActiveMatch: boolean;
 	match: IMatch | null;
 }
 
-export interface IQueueStatusResponse {
+export interface IQueueStatusRes {
 	inQueue: boolean;
 	queuePosition: number;
 	queueSize: number;
 	matchType: TMatchType;
 	joinedAt: string;
-}
-
-export interface IPlayerStats {
-	id: string;
-	userId: string;
-	totalMatches: number;
-	totalWins: number;
-	totalLosses: number;
-	totalKills: number;
-	totalDeaths: number;
-	totalAssists: number;
-	totalHeadshots: number;
-	totalMvpRounds: number;
-	updatedAt: string;
 }
 
 export type TApiError = FetchBaseQueryError & {

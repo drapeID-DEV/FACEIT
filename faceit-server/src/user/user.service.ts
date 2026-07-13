@@ -8,7 +8,7 @@ import { hash } from 'argon2'
 import { CloudinaryService } from '@/cloudinary/cloudinary.service'
 import { PrismaService } from '@/prisma/prisma.service'
 
-import { AuthMethod } from '../../generated/prisma'
+import { AuthMethod, User } from '../../generated/prisma'
 import { UpdateUserDto } from './dto/update-user.dto'
 
 @Injectable()
@@ -43,9 +43,13 @@ export class UserService {
 				nickname
 			},
 			select: {
+				id: true,
 				nickname: true,
 				profilePic: true,
-				createdAt: true
+				elo: true,
+				createdAt: true,
+				updatedAt: true,
+				playerStats: true
 			}
 		})
 

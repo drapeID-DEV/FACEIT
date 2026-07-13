@@ -10,8 +10,6 @@ export function SocketProvider({ children }: PropsWithChildren) {
 
 	useEffect(() => {
 		const onMatchFound = (match: any) => {
-			console.log('Match found!', match);
-
 			router.push(`/match/${match.id}`);
 		};
 

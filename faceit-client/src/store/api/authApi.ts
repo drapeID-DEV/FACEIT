@@ -1,10 +1,10 @@
 import { api } from './baseApi';
-import { IInfoMessageRes, IUserData } from '@/shared/types/api/responses';
-import { IUser } from '@/shared/types/user';
 import { TRegisterSchema } from '@/features/auth/schemes/register.schema';
 import { TLoginSchema } from '@/features/auth/schemes/login.schema';
 import { TResetSchema } from '@/features/auth/schemes/reset-password.schema';
 import { TNewPasswordSchema } from '@/features/auth/schemes/new-password.schema';
+import { IInfoMessageRes } from '@/shared/types/api/responses';
+import { IUser } from '@/shared/types/user';
 
 export const authApi = api.injectEndpoints({
 	endpoints: (builder) => ({

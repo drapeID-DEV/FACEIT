@@ -1,42 +1,31 @@
 import { MatchCardStat } from '@/shared/components/ui/MatchCardStat';
-import { useGetPlayerStatsQuery } from '@/store/api/statsApi';
+import { IPlayerStats } from '@/shared/types/user';
 
 interface Props {
-	playerId: string;
+	playerStats: IPlayerStats;
 }
 
-export function CardStatsList({ playerId }: Props) {
-	const { data, isLoading, isError } = useGetPlayerStatsQuery(playerId);
-
-	if (isError) {
-		return <>Unable to load stats</>;
-	}
-
-	if (isLoading) {
-		return <>Loading...</>;
-	}
-
-	if (!data) {
-		return <>Unable to load stats</>;
-	}
-
+export function CardStatsList({ playerStats }: Props) {
 	const avg =
-		data.totalMatches > 0
-			? Math.floor(data.totalKills / data.totalMatches)
+		playerStats.totalMatches > 0
+			? Math.floor(playerStats.totalKills / playerStats.totalMatches)
 			: 0;
 
 	const kd =
-		data.totalDeaths > 0
-			? +(data.totalKills / data.totalDeaths).toFixed(2)
-			: data.totalKills;
+		playerStats.totalDeaths > 0
+			? +(playerStats.totalKills / playerStats.totalDeaths).toFixed(2)
+			: playerStats.totalKills;
 
 	const winRate =
-		data.totalMatches > 0
-			? Math.round((data.totalWins / data.totalMatches) * 100)
+		playerStats.totalMatches > 0
+			? Math.round(
+					(playerStats.totalWins / playerStats.totalMatches) * 100
+				)
 			: 0;
 
 	return (
 		<>
+			<MatchCardStat title="Matches" value={playerStats.totalMatches} />
 			<MatchCardStat title="Wins %" value={winRate} />
 			<MatchCardStat title="AVG" value={avg} />
 			<MatchCardStat title="K/D" value={kd} />

@@ -9,7 +9,8 @@ export const matchWithParticipantsInclude =
 						id: true,
 						nickname: true,
 						profilePic: true,
-						elo: true
+						elo: true,
+						playerStats: true
 					}
 				}
 			}

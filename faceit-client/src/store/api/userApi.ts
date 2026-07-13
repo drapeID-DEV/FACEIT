@@ -1,6 +1,7 @@
-import { IPlayerProfile, IUserData } from '@/shared/types/api/responses';
+import { IUserData } from '@/shared/types/user';
 import { api } from './baseApi';
 import { TSettingsSchema } from '@/features/user/schemes/settings.schema';
+import { IPlayerProfileRes } from '@/shared/types/api/responses';
 
 export const userApi = api.injectEndpoints({
 	endpoints: (builder) => ({
@@ -8,9 +9,8 @@ export const userApi = api.injectEndpoints({
 			query: () => '/users/me',
 			providesTags: ['Profile']
 		}),
-		getPublicProfile: builder.query<IPlayerProfile, string>({
-			query: (nickname) => `/users/profile/${nickname}`,
-			providesTags: ['Profile']
+		getPublicProfile: builder.query<IPlayerProfileRes, string>({
+			query: (nickname) => `/users/profile/${nickname}`
 		}),
 		updateProfile: builder.mutation<void, TSettingsSchema>({
 			query: (data) => ({

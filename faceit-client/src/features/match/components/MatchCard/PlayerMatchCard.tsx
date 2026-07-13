@@ -36,7 +36,7 @@ export function PlayerMatchCard({ player }: Props) {
 				</div>
 			</Link>
 			<div className="flex px-3 justify-between text-white py-2 text-xl">
-				<CardStatsList playerId={player.userId} />
+				<CardStatsList playerStats={player.user.playerStats} />
 			</div>
 		</div>
 	);

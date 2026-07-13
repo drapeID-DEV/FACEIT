@@ -1,3 +1,5 @@
+import { IPlayerStats } from './user';
+
 export type TMatchStatus =
 	| 'SEARCHING'
 	| 'READY'
@@ -9,30 +11,24 @@ export type TMatchType = 'ONE_VS_ONE' | 'TEAM';
 
 export interface IMatchParticipant {
 	id: string;
-
 	userId: string;
 	matchId: string;
-
 	team: number;
-
 	isWinner: boolean;
-
 	eloBefore: number;
 	eloAfter: number;
-
 	kills: number;
 	deaths: number;
 	assists: number;
 	headshots: number;
 	mvpRounds: number;
-
 	createdAt: string;
-
 	user: {
 		id: string;
 		nickname: string;
 		profilePic: string;
 		elo: number;
+		playerStats: IPlayerStats;
 	};
 }
 
