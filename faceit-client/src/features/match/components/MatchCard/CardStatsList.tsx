@@ -1,4 +1,4 @@
-import { MatchCardStat } from '@/shared/components/ui/MatchCardStat';
+import { PlayerStat } from '@/shared/components/ui/PlayerStat';
 import { IPlayerStats } from '@/shared/types/user';
 
 interface Props {
@@ -25,10 +25,10 @@ export function CardStatsList({ playerStats }: Props) {
 
 	return (
 		<>
-			<MatchCardStat title="Matches" value={playerStats.totalMatches} />
-			<MatchCardStat title="Wins %" value={winRate} />
-			<MatchCardStat title="AVG" value={avg} />
-			<MatchCardStat title="K/D" value={kd} />
+			<PlayerStat title="Matches" value={playerStats.totalMatches} />
+			<PlayerStat title="Wins %" value={winRate} />
+			<PlayerStat title="AVG" value={avg} />
+			<PlayerStat title="K/D" value={kd} />
 		</>
 	);
 }
