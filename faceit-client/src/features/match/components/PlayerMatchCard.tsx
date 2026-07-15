@@ -1,7 +1,7 @@
 import { ProfileMatchPic } from '@/shared/components/ui/ProfileMatchCard';
 import { IMatchParticipant } from '@/shared/types/match';
 import Link from 'next/link';
-import { CardStatsList } from './CardStatsList';
+import { PlayerStatsGrid } from '../../stats/PlayerStatsGrid';
 
 interface Props {
 	player: IMatchParticipant;
@@ -36,7 +36,10 @@ export function PlayerMatchCard({ player }: Props) {
 				</div>
 			</Link>
 			<div className="flex px-3 justify-between text-white py-2 text-xl">
-				<CardStatsList playerStats={player.user.playerStats} />
+				<PlayerStatsGrid
+					items={['matches', 'winRate', 'avg', 'kd']}
+					playerStats={player.user.playerStats}
+				/>
 			</div>
 		</div>
 	);

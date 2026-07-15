@@ -30,17 +30,3 @@ export interface IUserData {
 	updatedAt: string;
 	accounts: IAccount[];
 }
-
-export interface IPlayerStats {
-	id: string;
-	userId: string;
-	totalMatches: number;
-	totalWins: number;
-	totalLosses: number;
-	totalKills: number;
-	totalDeaths: number;
-	totalAssists: number;
-	totalHeadshots: number;
-	totalMvpRounds: number;
-	updatedAt: string;
-}

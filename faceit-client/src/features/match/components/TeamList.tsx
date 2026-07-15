@@ -1,5 +1,5 @@
 import { IMatchParticipant } from '@/shared/types/match';
-import { PlayerMatchCard } from './MatchCard/PlayerMatchCard';
+import { PlayerMatchCard } from './PlayerMatchCard';
 
 interface Props {
 	team?: IMatchParticipant[];
