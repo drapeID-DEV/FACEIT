@@ -1,4 +1,4 @@
-import { MatchesList } from '@/features/user/components/UserProfile/ProfileMatchesTab/MatchesList';
+import { MatchesList } from '@/features/user/components/UserProfile/ProfileTabs/ProfileMatchesTab/MatchesList';
 
 interface PageProps {
 	params: Promise<{

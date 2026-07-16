@@ -1,7 +1,6 @@
 import Link from 'next/link';
 import { MatchResultStrip } from './MatchResultStrip';
 import { IMatchHistoryItem } from '@/shared/types/match-history';
-import { MATCH_HISTORY_GRID } from './constants/grid';
 import { MatchDate } from './MatchDate';
 import { MatchScore } from './MatchScore';
 import { MatchElo } from './MatchElo';
