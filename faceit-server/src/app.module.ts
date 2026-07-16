@@ -12,6 +12,7 @@ import { MatchModule } from './match/match.module'
 import { MatchmakingModule } from './matchmaking/matchmaking.module'
 import { PrismaModule } from './prisma/prisma.module'
 import { UserModule } from './user/user.module'
+import { PlayerModule } from './player/player.module';
 
 @Module({
 	imports: [
@@ -28,7 +29,8 @@ import { UserModule } from './user/user.module'
 		TwoFactorAuthModule,
 		CloudinaryModule,
 		MatchmakingModule,
-		MatchModule
+		MatchModule,
+		PlayerModule
 	]
 })
 export class AppModule {}

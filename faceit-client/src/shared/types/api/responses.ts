@@ -1,6 +1,6 @@
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 import { IMatch, TMatchType } from '../match';
-import { IPlayerStats } from '../user';
+import { IPlayerStats } from '../stats';
 
 export interface IInfoMessageRes {
 	message: string;

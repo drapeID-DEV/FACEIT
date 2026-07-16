@@ -14,7 +14,7 @@ import {
 } from '@nestjs/common'
 import { FileInterceptor } from '@nestjs/platform-express'
 import { UserRole } from 'generated/prisma'
-import { memoryStorage, Multer } from 'multer'
+import { memoryStorage } from 'multer'
 
 import { Authorization } from '@/auth/decorators/auth.decorator'
 import { Authorized } from '@/auth/decorators/authorized.decorator'

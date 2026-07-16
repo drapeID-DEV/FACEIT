@@ -66,6 +66,44 @@ export class MatchService {
 		return match
 	}
 
+	public async findMatchesByUserId(userId: string) {
+		const participants = await this.prisma.matchParticipant.findMany({
+			where: {
+				userId
+			},
+			include: {
+				match: {
+					select: {
+						id: true,
+						matchType: true,
+						status: true,
+						team1Score: true,
+						team2Score: true,
+						finishedAt: true,
+						participants: {
+							select: {
+								team: true,
+								user: {
+									select: {
+										id: true,
+										nickname: true,
+										profilePic: true,
+										elo: true
+									}
+								}
+							}
+						}
+					}
+				}
+			},
+			orderBy: {
+				createdAt: 'desc'
+			}
+		})
+
+		return participants
+	}
+
 	public async startMatch(matchId: string) {
 		const match = await this.prisma.match.findUnique({
 			where: { id: matchId }
