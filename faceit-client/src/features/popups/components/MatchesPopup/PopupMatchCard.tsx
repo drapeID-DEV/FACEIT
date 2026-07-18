@@ -1,23 +1,20 @@
-import { MATCHES } from '@/shared/data/matches.data';
-import { USERS } from '@/shared/data/users.data';
-import { MatchID } from '@/shared/types/match';
+import { MatchResultBadge } from '@/shared/components/ui/MatchResultBadge';
+import { getEnemyTeamName } from '@/shared/lib/enemy-teamname';
+import { IMatchHistoryItem } from '@/shared/types/match-history';
+import Link from 'next/link';
 
 interface Props {
-	matchId: MatchID;
+	matchItem: IMatchHistoryItem;
 }
 
-export function PopupMatchCard({ matchId }: Props) {
-	const matchData = MATCHES[matchId];
-	const teamName = USERS[matchData.teams.team2[0]].username;
-
+export function PopupMatchCard({ matchItem }: Props) {
 	return (
-		<div className="bg-accent p-3 flex justify-between w-full rounded-xl">
-			<p className="text-base">team_{teamName}</p>
-			<p
-				className={`text-base ${matchData.result === 'Win' ? 'text-green-600' : 'text-red-600'}`}
-			>
-				{matchData.result}
-			</p>
-		</div>
+		<Link
+			href={`/match/${matchItem.matchId}`}
+			className="bg-accent p-3 flex justify-between items-center w-full rounded-xl hover:bg-neutral-700 duration-200"
+		>
+			<p className="text-sm">{getEnemyTeamName(matchItem)}</p>
+			<MatchResultBadge isWinner={matchItem.isWinner} />
+		</Link>
 	);
 }

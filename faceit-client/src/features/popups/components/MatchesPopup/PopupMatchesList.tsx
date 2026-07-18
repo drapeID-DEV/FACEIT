@@ -1,11 +1,19 @@
-import { USERS } from '@/shared/data/users.data';
+import { IMatchHistoryItem } from '@/shared/types/match-history';
 import { PopupMatchCard } from './PopupMatchCard';
 
-export function PopupMatchesList() {
+interface Props {
+	matches: IMatchHistoryItem[] | undefined;
+}
+
+export function PopupMatchesList({ matches }: Props) {
+	if (!matches) {
+		return <p className="text-sm text-center">Unable to load matches</p>;
+	}
+
 	return (
 		<ul className="flex flex-col gap-3 px-5 mb-3 overflow-y-auto">
-			{USERS['u1'].matchIds.map((match) => (
-				<PopupMatchCard key={match} matchId={match} />
+			{matches.map((item) => (
+				<PopupMatchCard key={item.matchId} matchItem={item} />
 			))}
 		</ul>
 	);

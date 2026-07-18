@@ -17,22 +17,24 @@ export function MatchHistoryItem({ historyItem }: Props) {
 			href={`/match/${historyItem.matchId}`}
 			className="flex gap-3 text-sm w-full"
 		>
-			<MatchResultStrip isWinner={historyItem.isWinner} />
 			<div
-				className={`w-full flex justify-between items-center rounded-xl bg-primary px-5 py-4 hover:bg-accent hover:cursor-pointer duration-200`}
+				className={`w-full relative flex rounded-xl bg-primary hover:bg-accent hover:cursor-pointer duration-200 overflow-hidden`}
 			>
-				<MatchDate finishedAt={historyItem.match.finishedAt} />
-				<MatchScore match={historyItem} />
-				<MatchElo
-					before={historyItem.eloBefore}
-					after={historyItem.eloAfter}
-				/>
-				<MatchKDA
-					kills={historyItem.kills}
-					deaths={historyItem.deaths}
-					assists={historyItem.assists}
-				/>
-				<MatchMap />
+				<MatchResultStrip isWinner={historyItem.isWinner} />
+				<div className="grid w-full grid-cols-[1.3fr_1fr_1fr_1fr_.8fr] items-center gap-8 px-5 py-4">
+					<MatchDate finishedAt={historyItem.match.finishedAt} />
+					<MatchScore matchItem={historyItem} />
+					<MatchElo
+						before={historyItem.eloBefore}
+						after={historyItem.eloAfter}
+					/>
+					<MatchKDA
+						kills={historyItem.kills}
+						deaths={historyItem.deaths}
+						assists={historyItem.assists}
+					/>
+					<MatchMap />
+				</div>
 			</div>
 		</Link>
 	);

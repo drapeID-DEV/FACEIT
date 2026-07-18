@@ -11,7 +11,7 @@ export function MatchElo({ before, after }: Props) {
 	const positive = diff >= 0;
 
 	return (
-		<div className="flex flex-col">
+		<div className="flex flex-col items-center">
 			<p className="font-semibold">{after.toLocaleString()}</p>
 
 			<div
