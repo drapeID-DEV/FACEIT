@@ -1,3 +1,4 @@
+import { AcceptanceModal } from '@/features/matchmaking/components/AcceptanceModal';
 import '../globals.css';
 import { LeftSidebar } from '@/features/menu-system/components/LeftSidebar';
 import { RightSidebar } from '@/features/menu-system/components/RightSidebar';
@@ -11,6 +12,7 @@ export default function MainLayout({
 }) {
 	return (
 		<SocketProvider>
+			<AcceptanceModal />
 			<LeftSidebar />
 			<div className="relative rounded-2xl bg-neutral-950 h-full w-full box-border flex text-5xl overflow-auto">
 				{children}

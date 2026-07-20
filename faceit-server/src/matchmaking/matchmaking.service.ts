@@ -3,13 +3,15 @@ import { Injectable, NotFoundException } from '@nestjs/common'
 import { MatchService } from '@/match/match.service'
 
 import { QueuePlayer } from './interfaces/queue-player.interface'
+import { MatchAcceptanceService } from './match-acceptance.service'
 import { MatchmakingGateway } from './matchmaking.gateway'
 
 @Injectable()
 export class MatchmakingService {
 	constructor(
 		private readonly matchService: MatchService,
-		private readonly matchmakingGateway: MatchmakingGateway
+		private readonly matchmakingGateway: MatchmakingGateway,
+		private readonly matchAcceptanceService: MatchAcceptanceService
 	) {}
 
 	private readonly queue: QueuePlayer[] = []
@@ -38,7 +40,7 @@ export class MatchmakingService {
 
 		this.queue.push(player)
 
-		const match = await this.findOpponent(player)
+		await this.findOpponent(player)
 
 		return {
 			message: 'Searching for opponent...'
@@ -77,14 +79,14 @@ export class MatchmakingService {
 		this.leaveQueue(player.userId)
 		this.leaveQueue(opponent.userId)
 
-		const match = await this.matchService.create([
-			player.userId,
-			opponent.userId
+		const acceptance = this.matchAcceptanceService.create([
+			player,
+			opponent
 		])
 
-		this.matchmakingGateway.notifyMatchFound(match)
+		this.matchmakingGateway.notifyMatchReady(acceptance)
 
-		return match
+		return acceptance
 	}
 
 	public getQueueStatus(userId: string) {
