@@ -1,47 +1,52 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
 import { PropsWithChildren, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { useDispatch } from 'react-redux';
 
 import { socket } from '@/shared/lib/socket';
-import { AppDispatch } from '@/store/store';
-import {
-	acceptedUpdated,
-	matchReady,
-	resetMatchmaking
-} from '@/store/slices/AcceptancePopupSlice';
 import { api } from '@/store/api/baseApi';
+import { AppDispatch } from '@/store/store';
+import { matchmakingApi } from '@/store/api/matchmakingApi';
 
 export function SocketProvider({ children }: PropsWithChildren) {
 	const router = useRouter();
 	const dispatch = useDispatch<AppDispatch>();
 
 	useEffect(() => {
-		const onMatchReady = (data: {
-			acceptanceId: string;
-			expiresAt: string;
-			acceptedPlayers: number;
-			totalPlayers: number;
-		}) => {
-			dispatch(matchReady(data));
+		const invalidate = (...tags: ('Queue' | 'CurrentMatch')[]) =>
+			dispatch(api.util.invalidateTags(tags));
+
+		const onMatchReady = () => {
+			invalidate('Queue');
 		};
 
 		const onAcceptedUpdated = (data: {
 			acceptedPlayers: number;
 			totalPlayers: number;
 		}) => {
-			dispatch(acceptedUpdated(data));
+			dispatch(
+				matchmakingApi.util.updateQueryData(
+					'getCurrentAcceptance',
+					undefined,
+					(draft) => {
+						if (!draft.hasAcceptance) {
+							return;
+						}
+
+						draft.acceptance.acceptedPlayers = data.acceptedPlayers;
+						draft.acceptance.totalPlayers = data.totalPlayers;
+					}
+				)
+			);
 		};
 
 		const onMatchCancelled = () => {
-			dispatch(resetMatchmaking());
+			invalidate('Queue');
 		};
 
 		const onMatchCreated = (match: { id: string }) => {
-			dispatch(resetMatchmaking());
-
-			dispatch(api.util.invalidateTags(['Queue', 'CurrentMatch']));
+			invalidate('Queue', 'CurrentMatch');
 
 			router.push(`/match/${match.id}`);
 		};

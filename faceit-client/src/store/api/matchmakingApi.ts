@@ -1,4 +1,5 @@
 import {
+	IAcceptanceRes,
 	ICurrentMatchRes,
 	IInfoMessageRes,
 	IQueueStatusRes
@@ -32,6 +33,9 @@ export const matchmakingApi = api.injectEndpoints({
 		getQueueStatus: builder.query<IQueueStatusRes, void>({
 			query: () => '/matchmaking/queue/status',
 			providesTags: ['Queue']
+		}),
+		getCurrentAcceptance: builder.query<IAcceptanceRes, void>({
+			query: () => '/matchmaking/acceptance'
 		})
 	})
 });
@@ -40,5 +44,6 @@ export const {
 	useGetCurrentMatchQuery,
 	useJoinQueueMutation,
 	useGetQueueStatusQuery,
-	useLeaveQueueMutation
+	useLeaveQueueMutation,
+	useGetCurrentAcceptanceQuery
 } = matchmakingApi;

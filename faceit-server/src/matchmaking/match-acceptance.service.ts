@@ -44,6 +44,12 @@ export class MatchAcceptanceService {
 		return this.acceptances.get(id)
 	}
 
+	public findByUserId(userId: string) {
+		return [...this.acceptances.values()].find(acceptance =>
+			acceptance.players.some(player => player.userId === userId)
+		)
+	}
+
 	public accept(acceptanceId: string, userId: string) {
 		const acceptance = this.acceptances.get(acceptanceId)
 

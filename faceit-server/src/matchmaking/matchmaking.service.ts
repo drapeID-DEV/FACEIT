@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common'
+import { Injectable, NotFoundException, OnModuleInit } from '@nestjs/common'
 
 import { MatchService } from '@/match/match.service'
 
@@ -7,12 +7,29 @@ import { MatchAcceptanceService } from './match-acceptance.service'
 import { MatchmakingGateway } from './matchmaking.gateway'
 
 @Injectable()
-export class MatchmakingService {
+export class MatchmakingService implements OnModuleInit {
 	constructor(
 		private readonly matchService: MatchService,
 		private readonly matchmakingGateway: MatchmakingGateway,
 		private readonly matchAcceptanceService: MatchAcceptanceService
 	) {}
+
+	onModuleInit() {
+		this.matchAcceptanceService.onExpired(acceptance => {
+			for (const player of acceptance.players) {
+				const accepted = acceptance.acceptedPlayers.has(player.userId)
+
+				if (accepted) {
+					this.rejoinQueue(player)
+				}
+
+				this.matchmakingGateway.notifyMatchCancelled(
+					player.userId,
+					accepted
+				)
+			}
+		})
+	}
 
 	private readonly queue: QueuePlayer[] = []
 
@@ -45,6 +62,18 @@ export class MatchmakingService {
 		return {
 			message: 'Searching for opponent...'
 		}
+	}
+
+	public async rejoinQueue(player: QueuePlayer) {
+		const exists = this.queue.some(p => p.userId === player.userId)
+
+		if (exists) {
+			return
+		}
+
+		this.queue.push(player)
+
+		await this.findOpponent(player)
 	}
 
 	public leaveQueue(userId: string) {

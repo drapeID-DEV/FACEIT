@@ -16,6 +16,7 @@ import {
 	MatchAcceptance,
 	MatchAcceptanceService
 } from './match-acceptance.service'
+import { MatchmakingService } from './matchmaking.service'
 
 @WebSocketGateway({
 	cors: {
@@ -24,7 +25,7 @@ import {
 	}
 })
 export class MatchmakingGateway
-	implements OnGatewayConnection, OnGatewayDisconnect, OnModuleInit
+	implements OnGatewayConnection, OnGatewayDisconnect
 {
 	constructor(
 		private readonly matchAcceptanceService: MatchAcceptanceService,
@@ -35,22 +36,6 @@ export class MatchmakingGateway
 
 	@WebSocketServer()
 	server: Server
-
-	onModuleInit() {
-		this.matchAcceptanceService.onExpired(acceptance => {
-			for (const player of acceptance.players) {
-				const socketId = this.connectedUsers.get(player.userId)
-
-				if (!socketId) {
-					continue
-				}
-
-				this.server.to(socketId).emit('matchCancelled', {
-					reason: 'timeout'
-				})
-			}
-		})
-	}
 
 	handleConnection(client: Socket) {
 		const session = client.request.session
@@ -144,5 +129,18 @@ export class MatchmakingGateway
 				totalPlayers: acceptance.players.length
 			})
 		}
+	}
+
+	public notifyMatchCancelled(userId: string, requeued: boolean) {
+		const socketId = this.connectedUsers.get(userId)
+
+		if (!socketId) {
+			return
+		}
+
+		this.server.to(socketId).emit('matchCancelled', {
+			reason: 'timeout',
+			requeued
+		})
 	}
 }

@@ -1,33 +1,38 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-
 import { socket } from '@/shared/lib/socket';
-import { AppDispatch, RootState } from '@/store/store';
-import { markAccepted } from '@/store/slices/AcceptancePopupSlice';
+import { useGetCurrentAcceptanceQuery } from '@/store/api/matchmakingApi';
 
 export function AcceptanceModal() {
-	const dispatch = useDispatch<AppDispatch>();
+	const { data } = useGetCurrentAcceptanceQuery(undefined, {
+		pollingInterval: 1000
+	});
 
-	const {
-		isMatchReady,
-		isAccepted,
-		acceptanceId,
-		expiresAt,
-		acceptedPlayers,
-		totalPlayers
-	} = useSelector((state: RootState) => state.acceptance);
-
-	const [timeLeft, setTimeLeft] = useState(30);
+	const [timeLeft, setTimeLeft] = useState(0);
+	const [isAccepted, setIsAccepted] = useState(false);
 
 	useEffect(() => {
-		if (!expiresAt) return;
+		if (!data?.hasAcceptance) {
+			return;
+		}
+
+		setIsAccepted(data.acceptance.hasAccepted);
+	}, [data]);
+
+	useEffect(() => {
+		if (!data?.hasAcceptance) {
+			return;
+		}
 
 		const update = () => {
 			const seconds = Math.max(
 				0,
-				Math.ceil((new Date(expiresAt).getTime() - Date.now()) / 1000)
+				Math.ceil(
+					(new Date(data.acceptance.expiresAt).getTime() -
+						Date.now()) /
+						1000
+				)
 			);
 
 			setTimeLeft(seconds);
@@ -38,7 +43,7 @@ export function AcceptanceModal() {
 		const interval = setInterval(update, 250);
 
 		return () => clearInterval(interval);
-	}, [expiresAt]);
+	}, [data]);
 
 	const timer = useMemo(() => {
 		const minutes = Math.floor(timeLeft / 60);
@@ -49,12 +54,14 @@ export function AcceptanceModal() {
 			.padStart(2, '0')}`;
 	}, [timeLeft]);
 
-	if (!isMatchReady) {
+	if (!data?.hasAcceptance) {
 		return null;
 	}
 
+	const { acceptanceId, acceptedPlayers, totalPlayers } = data.acceptance;
+
 	const handleAccept = () => {
-		if (!acceptanceId || isAccepted) {
+		if (isAccepted) {
 			return;
 		}
 
@@ -62,7 +69,7 @@ export function AcceptanceModal() {
 			acceptanceId
 		});
 
-		dispatch(markAccepted());
+		setIsAccepted(true);
 	};
 
 	return (
@@ -71,32 +78,36 @@ export function AcceptanceModal() {
 				<h2 className="text-center text-3xl font-bold text-white">
 					Match Found
 				</h2>
+
 				<p className="mt-2 text-center text-sm text-zinc-400">
 					Accept the match before time runs out
 				</p>
+
 				<div className="mt-8 text-center">
 					<div className="text-5xl font-bold text-[#ff7a00]">
 						{timer}
 					</div>
 				</div>
+
 				<div className="mt-8 rounded-xl border border-zinc-800 bg-[#111] p-5">
 					<div className="flex items-center justify-between">
-						<span className="text-zinc-400">Players accepted</span>
+						<span className="text-zinc-400">Players ready</span>
+
 						<span className="font-semibold text-white">
 							{acceptedPlayers} / {totalPlayers}
 						</span>
 					</div>
+
 					<div className="mt-4 h-2 overflow-hidden rounded-full bg-zinc-800">
 						<div
 							className="h-full rounded-full bg-[#ff7a00] transition-all duration-300"
 							style={{
-								width: `${
-									(acceptedPlayers / totalPlayers) * 100
-								}%`
+								width: `${(acceptedPlayers / totalPlayers) * 100}%`
 							}}
 						/>
 					</div>
 				</div>
+
 				<button
 					onClick={handleAccept}
 					disabled={isAccepted}

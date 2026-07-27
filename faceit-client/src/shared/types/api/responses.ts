@@ -29,6 +29,20 @@ export interface IQueueStatusRes {
 	joinedAt: string;
 }
 
+export interface AcceptanceData {
+	acceptance: {
+		acceptanceId: string;
+		expiresAt: string;
+		acceptedPlayers: number;
+		totalPlayers: number;
+		hasAccepted: boolean;
+	};
+}
+
+export interface IAcceptanceRes extends AcceptanceData {
+	hasAcceptance: boolean;
+}
+
 export type TApiError = FetchBaseQueryError & {
 	data: {
 		statusCode: number;
