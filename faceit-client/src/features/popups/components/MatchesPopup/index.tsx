@@ -1,9 +1,9 @@
 import { useGetMeQuery } from '@/store/api/userApi';
 import { PopupMatchesList } from './PopupMatchesList';
-import { useGetMatchesHistoryQuery } from '@/store/api/matchApi';
 import { notification } from '@/shared/utils/notifications';
 import { TApiError } from '@/shared/types/api/responses';
 import { Loader } from '@/shared/components/ui/Loader';
+import { useGetMatchesHistoryQuery } from '@/store/api/playerApi';
 
 export function MatchesPopup() {
 	const { data: user, isLoading: userLoad, error: userErr } = useGetMeQuery();

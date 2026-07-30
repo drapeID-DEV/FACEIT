@@ -24,6 +24,10 @@ export function StatsTab({ nickname }: Props) {
 		return null;
 	}
 
+	if (!data) {
+		return null;
+	}
+
 	return (
 		<div className="flex flex-wrap gap-10 justify-between">
 			<PlayerStatsGrid

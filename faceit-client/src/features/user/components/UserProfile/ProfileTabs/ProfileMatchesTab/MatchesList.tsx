@@ -1,5 +1,5 @@
 'use client';
-import { useGetMatchesHistoryQuery } from '@/store/api/matchApi';
+import { useGetMatchesHistoryQuery } from '@/store/api/playerApi';
 import { MatchHistoryItem } from './MatchHistoryItem';
 
 interface Props {

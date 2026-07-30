@@ -1,8 +1,8 @@
-import { IMatch, TMatchStatus } from './match';
+import { TMatchStatus, TMatchType } from './match';
 
 export interface IMatchHistory {
 	id: string;
-	matchType: IMatch;
+	matchType: TMatchType;
 	status: TMatchStatus;
 	team1Score: number;
 	team2Score: number;

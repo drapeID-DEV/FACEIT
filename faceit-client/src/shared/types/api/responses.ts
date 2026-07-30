@@ -1,5 +1,5 @@
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
-import { IMatch, TMatchType } from '../match';
+import { IMatch, TMatchStatus, TMatchType } from '../match';
 import { IPlayerStats } from '../stats';
 
 export interface IInfoMessageRes {
@@ -41,6 +41,27 @@ export interface AcceptanceData {
 
 export interface IAcceptanceRes extends AcceptanceData {
 	hasAcceptance: boolean;
+}
+
+export interface IEloHistoryItem {
+	matchId: string;
+	team: number;
+	isWinner: boolean;
+	eloBefore: number;
+	eloAfter: number;
+	kills: number;
+	deaths: number;
+	assists: number;
+	createdAt: string;
+	match: Pick<
+		IMatch,
+		| 'id'
+		| 'matchType'
+		| 'status'
+		| 'team1Score'
+		| 'team2Score'
+		| 'finishedAt'
+	>;
 }
 
 export type TApiError = FetchBaseQueryError & {

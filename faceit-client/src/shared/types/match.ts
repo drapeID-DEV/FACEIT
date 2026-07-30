@@ -1,4 +1,4 @@
-import { IPlayerStats } from './user';
+import { IPlayerStats } from './stats';
 
 export type TMatchStatus =
 	| 'SEARCHING'
@@ -34,23 +34,16 @@ export interface IMatchParticipant {
 
 export interface IMatch {
 	id: string;
-
 	matchType: TMatchType;
 	maxPlayersPerTeam: number;
-
 	status: TMatchStatus;
-
 	winnerTeam: number | null;
-
 	team1Score: number;
 	team2Score: number;
-
 	cancelledBy: string | null;
 	cancellationReason: string | null;
-
 	createdAt: string;
 	updatedAt: string;
 	finishedAt: string | null;
-
 	participants: IMatchParticipant[];
 }
