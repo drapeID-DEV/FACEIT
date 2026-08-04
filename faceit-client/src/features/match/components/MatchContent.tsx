@@ -13,7 +13,7 @@ import { socket } from '@/shared/lib/socket';
 import { IMapBanState } from '@/shared/types/api/responses';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@/store/store';
-import { MapBan } from './MapBan/MapBan';
+import { MapBan } from './MapBan/MapBanScreen';
 import { useGetMeQuery } from '@/store/api/userApi';
 import { SelectedMapScreen } from './SelectedMapScreen';
 
