@@ -8,6 +8,8 @@ import { socket } from '@/shared/lib/socket';
 import { api } from '@/store/api/baseApi';
 import { AppDispatch } from '@/store/store';
 import { matchmakingApi } from '@/store/api/matchmakingApi';
+import { IMapBanState } from '@/shared/types/api/responses';
+import { matchApi } from '@/store/api/matchApi';
 
 export function SocketProvider({ children }: PropsWithChildren) {
 	const router = useRouter();

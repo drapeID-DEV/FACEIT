@@ -8,12 +8,13 @@ import { PasswordRecoveryModule } from './auth/password-recovery/password-recove
 import { TwoFactorAuthModule } from './auth/two-factor-auth/two-factor-auth.module'
 import { CloudinaryModule } from './cloudinary/cloudinary.module'
 import { IS_DEV_ENV } from './libs/common/utils/is-dev.util'
+import { MatchBanModule } from './match/match-ban/match-ban.module'
 import { MatchModule } from './match/match.module'
 import { MatchmakingModule } from './matchmaking/matchmaking.module'
+import { PlayerModule } from './player/player.module'
 import { PrismaModule } from './prisma/prisma.module'
+import { StatsModule } from './stats/stats.module'
 import { UserModule } from './user/user.module'
-import { PlayerModule } from './player/player.module';
-import { StatsModule } from './stats/stats.module';
 
 @Module({
 	imports: [
@@ -32,7 +33,8 @@ import { StatsModule } from './stats/stats.module';
 		MatchmakingModule,
 		MatchModule,
 		PlayerModule,
-		StatsModule
+		StatsModule,
+		MatchBanModule
 	]
 })
 export class AppModule {}

@@ -1,4 +1,3 @@
-import { OnModuleInit } from '@nestjs/common'
 import {
 	ConnectedSocket,
 	MessageBody,
@@ -10,13 +9,13 @@ import {
 } from '@nestjs/websockets'
 import { Server, Socket } from 'socket.io'
 
+import { MatchBanService } from '@/match/match-ban/match-ban.service'
 import { MatchService } from '@/match/match.service'
 
 import {
 	MatchAcceptance,
 	MatchAcceptanceService
 } from './match-acceptance.service'
-import { MatchmakingService } from './matchmaking.service'
 
 @WebSocketGateway({
 	cors: {
@@ -29,7 +28,8 @@ export class MatchmakingGateway
 {
 	constructor(
 		private readonly matchAcceptanceService: MatchAcceptanceService,
-		private readonly matchService: MatchService
+		private readonly matchService: MatchService,
+		private readonly matchBanService: MatchBanService
 	) {}
 
 	private readonly connectedUsers = new Map<string, string>()
@@ -111,9 +111,15 @@ export class MatchmakingGateway
 			acceptance.players.map(player => player.userId)
 		)
 
+		const banState = await this.matchBanService.start(match.id)
+
 		this.matchAcceptanceService.remove(acceptance.id)
 
-		this.emitToPlayers(acceptance, 'matchCreated', match)
+		this.emitToPlayers(acceptance, 'matchCreated', {
+			id: match.id,
+			status: match.status,
+			banState
+		})
 	}
 
 	public notifyMatchReady(acceptance: MatchAcceptance) {

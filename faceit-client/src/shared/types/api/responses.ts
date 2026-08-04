@@ -64,6 +64,17 @@ export interface IEloHistoryItem {
 	>;
 }
 
+export interface IMapBanState {
+	status: 'MAP_BAN' | 'LIVE';
+	availableMaps: string[];
+	selectedMap: string | null;
+	currentBanTurn: 'TEAM1' | 'TEAM2';
+	team1LeaderId: string | null;
+	team2LeaderId: string | null;
+	banDeadline: string | null;
+	isMyTurn: boolean;
+}
+
 export type TApiError = FetchBaseQueryError & {
 	data: {
 		statusCode: number;

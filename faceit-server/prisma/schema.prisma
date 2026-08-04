@@ -86,6 +86,17 @@ model Match {
 
   status MatchStatus
 
+  availableMaps String[]
+
+  selectedMap String?
+
+  currentBanTurn BanTurn?
+
+  team1LeaderId String?
+  team2LeaderId String?
+
+  banDeadline DateTime?
+
   winnerTeam Int?
 
   team1Score Int @default(0)
@@ -199,9 +210,15 @@ enum TokenType {
 enum MatchStatus {
   SEARCHING
   READY
+  MAP_BAN
   LIVE
   FINISHED
   CANCELLED
+}
+
+enum BanTurn {
+  TEAM1
+  TEAM2
 }
 
 enum MatchType {
