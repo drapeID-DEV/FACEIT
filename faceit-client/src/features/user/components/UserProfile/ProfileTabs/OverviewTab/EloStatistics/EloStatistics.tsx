@@ -2,6 +2,7 @@
 
 import { useGetEloHistoryQuery } from '@/store/api/playerApi';
 import { EloChart } from './EloChart';
+import { ChartContainer } from './ChartContainer';
 
 interface Props {
 	nickname: string;
@@ -12,18 +13,21 @@ export function EloStatistics({ nickname }: Props) {
 
 	if (!data)
 		return (
-			<div className="bg-primary text-center py-8 px-5 rounded-2xl">
-				<h2 className="text-white text-2xl mb-5 font-bold">
-					Elo history
-				</h2>
-				<p className="text-xl">Unable to load history</p>
-			</div>
+			<ChartContainer>
+				<p className="text-xl text-widget">Unable to load history</p>
+			</ChartContainer>
+		);
+
+	if (!data.length)
+		return (
+			<ChartContainer>
+				<p className="text-xl text-widget">No recent matches</p>
+			</ChartContainer>
 		);
 
 	return (
-		<div className="bg-primary text-center py-8 px-5 rounded-2xl">
-			<h2 className="text-white text-2xl mb-5 font-bold">Elo history</h2>
+		<ChartContainer>
 			<EloChart history={data} />
-		</div>
+		</ChartContainer>
 	);
 }

@@ -31,12 +31,30 @@ export class MatchBanService {
 		return maps[Math.floor(Math.random() * maps.length)]
 	}
 
+	private async startLiveMatch(matchId: string, map: string) {
+		return this.prismaService.match.update({
+			where: {
+				id: matchId
+			},
+			data: {
+				status: 'LIVE',
+				selectedMap: map,
+				currentBanTurn: null,
+				banDeadline: null
+			}
+		})
+	}
+
 	private async performBan(match: Match, map: string) {
 		const availableMaps = match.availableMaps.filter(
 			availableMap => availableMap !== map
 		)
 
 		const isBanFinished = availableMaps.length === 1
+
+		if (isBanFinished) {
+			return this.startLiveMatch(match.id, availableMaps[0])
+		}
 
 		const nextTurn = match.currentBanTurn === 'TEAM1' ? 'TEAM2' : 'TEAM1'
 
@@ -46,12 +64,8 @@ export class MatchBanService {
 			},
 			data: {
 				availableMaps,
-				selectedMap: isBanFinished ? availableMaps[0] : undefined,
-				status: isBanFinished ? 'LIVE' : undefined,
-				currentBanTurn: isBanFinished ? null : nextTurn,
-				banDeadline: isBanFinished
-					? null
-					: new Date(Date.now() + 30_000)
+				currentBanTurn: nextTurn,
+				banDeadline: new Date(Date.now() + 30_000)
 			}
 		})
 

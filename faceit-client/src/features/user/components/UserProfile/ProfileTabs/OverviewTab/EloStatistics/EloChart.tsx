@@ -21,10 +21,12 @@ export function EloChart({ history }: Props) {
 	const maxElo = Math.max(...eloValues);
 	const padding = 25;
 
-	const chartData: MatchChartPoint[] = history.map((match) => ({
-		...match,
-		y: match.eloAfter
-	}));
+	const chartData: MatchChartPoint[] = [...history]
+		.reverse()
+		.map((match) => ({
+			...match,
+			y: match.eloAfter
+		}));
 
 	const [tooltip, setTooltip] = useState<{
 		x: number;

@@ -2,6 +2,7 @@ import { MatchResultBadge } from '@/shared/components/ui/MatchResultBadge';
 import TooltipRow from './TooltipRow';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { IEloHistoryItem } from '@/shared/types/api/responses';
+import { MatchScore } from '../../ProfileMatchesTab/MatchScore';
 
 interface MatchTooltipProps {
 	match: IEloHistoryItem;
@@ -16,10 +17,7 @@ export function MatchTooltip({ match }: MatchTooltipProps) {
 				{new Date(match.createdAt).toLocaleString()}
 			</p>
 			<div className="mb-6 flex items-center gap-3">
-				<MatchResultBadge isWinner={match.isWinner} />
-				<p className="text-2xl font-bold tracking-wide text-white">
-					{match.match.team1Score} : {match.match.team2Score}
-				</p>
+				<MatchScore matchItem={match} />
 			</div>
 			<div className="flex flex-col">
 				<TooltipRow

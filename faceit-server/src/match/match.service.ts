@@ -128,6 +128,13 @@ export class MatchService {
 	}
 
 	public async finishMatch(matchId: string, data: FinishMatchDto) {
+		console.log({
+			winnerTeam: data.winnerTeam,
+			team1Score: data.team1Score,
+			team2Score: data.team2Score,
+			playerStats: data.playerStats
+		})
+
 		return this.prisma.$transaction(async tx => {
 			const match = await tx.match.findUnique({
 				where: { id: matchId },
@@ -141,6 +148,13 @@ export class MatchService {
 			if (match.status !== MatchStatus.LIVE) {
 				throw new BadRequestException('Match is not live')
 			}
+
+			console.table(
+				match.participants.map(p => ({
+					nickname: p.userId,
+					team: p.team
+				}))
+			)
 
 			await tx.match.update({
 				where: { id: matchId },
