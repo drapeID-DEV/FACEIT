@@ -80,6 +80,7 @@ export class MatchService {
 						team1Score: true,
 						team2Score: true,
 						finishedAt: true,
+						selectedMap: true,
 						participants: {
 							select: {
 								team: true,

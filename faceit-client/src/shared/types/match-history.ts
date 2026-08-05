@@ -7,6 +7,7 @@ export interface IMatchHistory {
 	team1Score: number;
 	team2Score: number;
 	finishedAt: string | null;
+	selectedMap: string;
 	participants: IMatchHistoryParticipant[];
 }
 

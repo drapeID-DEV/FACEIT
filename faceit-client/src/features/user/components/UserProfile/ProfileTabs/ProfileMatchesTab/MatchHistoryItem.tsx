@@ -33,7 +33,7 @@ export function MatchHistoryItem({ historyItem }: Props) {
 						deaths={historyItem.deaths}
 						assists={historyItem.assists}
 					/>
-					<MatchMap />
+					<MatchMap mapName={historyItem.match.selectedMap} />
 				</div>
 			</div>
 		</Link>
