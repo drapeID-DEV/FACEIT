@@ -48,7 +48,7 @@ export function PopupMenu() {
 	return (
 		<div
 			ref={popupRef}
-			className="absolute right-3 h-full w-70 rounded-xl border border-neutral-700 bg-primary"
+			className="absolute top-4 right-4 bottom-4 z-50 w-70 rounded-xl border border-neutral-700 bg-primary"
 		>
 			<div className="relative flex h-full flex-col pt-4">
 				<PopupHeader />

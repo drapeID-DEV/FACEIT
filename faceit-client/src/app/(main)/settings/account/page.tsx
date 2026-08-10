@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 export default function AccountSettingsPage() {
 	return (
-		<div className="px-25 py-5 flex gap-20 h-max flex-wrap items-center">
+		<div className="flex gap-20 h-max flex-wrap items-center">
 			<AccountSettingsForm />
 			<AvatarUploader />
 		</div>

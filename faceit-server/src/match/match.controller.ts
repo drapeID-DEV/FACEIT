@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Param, Patch, Req } from '@nestjs/common'
+import {
+	Body,
+	Controller,
+	Get,
+	HttpCode,
+	HttpStatus,
+	Param,
+	Patch,
+	Req
+} from '@nestjs/common'
 import { Request } from 'express'
 
 import { Authorization } from '@/auth/decorators/auth.decorator'
@@ -10,8 +19,9 @@ import { MatchService } from './match.service'
 export class MatchController {
 	constructor(private readonly matchService: MatchService) {}
 
-	@Get('current')
 	@Authorization()
+	@HttpCode(HttpStatus.OK)
+	@Get('current')
 	async getCurrentMatch(@Req() req: Request) {
 		const match = await this.matchService.findActiveMatchByUserId(
 			req.session.userId
@@ -29,6 +39,8 @@ export class MatchController {
 			}
 	}
 
+	@Authorization()
+	@HttpCode(HttpStatus.OK)
 	@Get(':id')
 	async getMatch(@Param('id') matchId: string) {
 		return this.matchService.findById(matchId)

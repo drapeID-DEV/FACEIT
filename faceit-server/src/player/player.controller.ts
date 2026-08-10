@@ -1,5 +1,6 @@
 import { Controller, Get, HttpCode, HttpStatus, Param } from '@nestjs/common'
 
+import { Authorization } from '@/auth/decorators/auth.decorator'
 import { MatchService } from '@/match/match.service'
 import { StatsService } from '@/stats/stats.service'
 import { UserService } from '@/user/user.service'
@@ -12,6 +13,7 @@ export class PlayerController {
 		private readonly statsService: StatsService
 	) {}
 
+	@Authorization()
 	@HttpCode(HttpStatus.OK)
 	@Get(':nickname/matches')
 	public async findMatchesByUserNickname(
@@ -22,6 +24,7 @@ export class PlayerController {
 		return this.matchService.findMatchesByUserId(user.id)
 	}
 
+	@Authorization()
 	@HttpCode(HttpStatus.OK)
 	@Get(':nickname/elo-history')
 	async getEloHistory(@Param('nickname') nickname: string) {

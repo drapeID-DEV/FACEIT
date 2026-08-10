@@ -14,10 +14,12 @@ export default function MainLayout({
 		<SocketProvider>
 			<AcceptanceModal />
 			<LeftSidebar />
-			<div className="relative rounded-2xl bg-neutral-950 h-full w-full box-border flex text-5xl overflow-auto">
-				{children}
+			<main className="relative flex-1 min-w-0 h-full overflow-hidden rounded-2xl bg-neutral-950">
+				<div className="h-full overflow-auto px-25 py-5">
+					{children}
+				</div>
 				<PopupMenu />
-			</div>
+			</main>
 			<RightSidebar />
 		</SocketProvider>
 	);

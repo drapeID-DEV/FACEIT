@@ -22,11 +22,11 @@ export default async function Layout({ children, params }: Props) {
 	const { nickname } = await params;
 
 	return (
-		<div className="flex w-full gap-10 px-25 py-5">
+		<div className="flex w-full min-w-0 gap-10">
 			<aside className="w-80 shrink-0">
 				<UserProfile nickname={nickname} />
 			</aside>
-			<div className="flex flex-1 flex-col gap-10">
+			<div className="flex min-w-0 flex-1 flex-col gap-10">
 				<ProfileTabsControl nickname={nickname} />
 				{children}
 			</div>
