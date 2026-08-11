@@ -75,6 +75,30 @@ export interface IMapBanState {
 	isMyTurn: boolean;
 }
 
+export interface ILeaderboardPlayer {
+	id: string;
+	nickname: string;
+	profilePic: string | null;
+	elo: number;
+	rank: number;
+}
+
+export interface ILeaderboardRes {
+	players: ILeaderboardPlayer[];
+	total: number;
+	page: number;
+	limit: number;
+	totalPages: number;
+}
+
+export interface IMyLeaderboardRes {
+	id: string;
+	nickname: string;
+	profilePic: string | null;
+	elo: number;
+	rank: number;
+}
+
 export type TApiError = FetchBaseQueryError & {
 	data: {
 		statusCode: number;
