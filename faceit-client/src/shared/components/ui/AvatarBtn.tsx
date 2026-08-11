@@ -33,7 +33,7 @@ export function AvatarBtn({ onClick, isLink, href }: Props) {
 	) : null;
 
 	const className =
-		'relative overflow-hidden w-10 h-10 border-2 border-transparent rounded-full hover:cursor-pointer hover:border-neutral-700 ' +
+		'relative overflow-hidden w-13 h-13 border-2 border-transparent rounded-full hover:cursor-pointer hover:border-neutral-700 ' +
 		(data?.profilePic ? '' : 'bg-amber-600');
 
 	return isLink ? (

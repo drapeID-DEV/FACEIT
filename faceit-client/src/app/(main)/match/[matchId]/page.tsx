@@ -14,7 +14,7 @@ export default async function MatchPage({ params }: Props) {
 	const { matchId } = await params;
 
 	return (
-		<div className="px-25 py-5 w-full h-full">
+		<div className="w-full h-full">
 			<MatchContent matchId={matchId} />
 		</div>
 	);
