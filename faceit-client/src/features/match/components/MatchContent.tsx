@@ -1,33 +1,37 @@
 'use client';
 
-import {
-	matchApi,
-	useGetMapBanStateQuery,
-	useGetMatchQuery
-} from '@/store/api/matchApi';
-import { TeamList } from './TeamList';
-import { useRouter } from 'next/navigation';
-import { notification } from '@/shared/utils/notifications';
 import { useEffect } from 'react';
-import { socket } from '@/shared/lib/socket';
-import { IMapBanState } from '@/shared/types/api/responses';
-import { useDispatch } from 'react-redux';
-import { AppDispatch } from '@/store/store';
-import { MapBan } from './MapBan/MapBanScreen';
-import { useGetMeQuery } from '@/store/api/userApi';
+import { useRouter } from 'next/navigation';
+
+import { notification } from '@/shared/utils/notifications';
+
+import { TeamList } from './TeamList';
+import { MapBanScreen } from './MapBan/MapBanScreen';
 import { SelectedMapScreen } from './SelectedMapScreen';
+import { useMatch } from '../hooks/useMatch';
+import { useMatchSocket } from '../hooks/useMatchSocket';
 
 interface Props {
 	matchId: string;
 }
 
 export function MatchContent({ matchId }: Props) {
-	const { data, isLoading, isError } = useGetMatchQuery(matchId);
-	const { data: bansData } = useGetMapBanStateQuery(matchId);
-	const { data: me } = useGetMeQuery();
-
-	const dispatch = useDispatch<AppDispatch>();
 	const router = useRouter();
+
+	const {
+		match,
+		mapBan,
+		team1,
+		team2,
+		team1Leader,
+		team2Leader,
+		isMyTurn,
+		isParticipant,
+		isError,
+		isLoading
+	} = useMatch(matchId);
+
+	useMatchSocket(matchId);
 
 	useEffect(() => {
 		if (!isError) return;
@@ -36,59 +40,31 @@ export function MatchContent({ matchId }: Props) {
 		router.replace('/');
 	}, [isError, router]);
 
-	useEffect(() => {
-		socket.emit('joinMatch', {
-			matchId
-		});
-	}, [matchId]);
-
-	useEffect(() => {
-		const handler = (state: IMapBanState) => {
-			console.log('mapBanUpdated', state);
-			dispatch(
-				matchApi.util.updateQueryData(
-					'getMapBanState',
-					matchId,
-					(draft) => {
-						Object.assign(draft, state);
-					}
-				)
-			);
-		};
-
-		socket.on('mapBanUpdated', handler);
-
-		return () => {
-			socket.off('mapBanUpdated', handler);
-		};
-	}, [dispatch, matchId]);
-
-	if (isError) {
+	if (isLoading) {
 		return null;
 	}
 
-	const team1 = data?.participants.filter((player) => player.team === 1);
-	const team2 = data?.participants.filter((player) => player.team === 2);
-
-	const currentLeaderId =
-		bansData?.currentBanTurn === 'TEAM1'
-			? bansData?.team1LeaderId
-			: bansData?.team2LeaderId;
-
-	const isMyTurn = currentLeaderId === me?.id;
+	if (isError || !match) {
+		return <h2>Something went wrong</h2>;
+	}
 
 	return (
 		<div className="flex h-full items-center justify-center gap-8">
 			<TeamList team={team1} />
-			{bansData?.status === 'MAP_BAN' && (
-				<MapBan
-					isMyTurn={isMyTurn}
+			{mapBan?.status === 'MAP_BAN' && team1Leader && team2Leader && (
+				<MapBanScreen
+					team1Leader={team1Leader}
+					team2Leader={team2Leader}
 					matchId={matchId}
-					state={bansData}
+					state={mapBan}
+					isMyTurn={isMyTurn}
 				/>
 			)}
-			{bansData?.selectedMap && (
-				<SelectedMapScreen map={bansData?.selectedMap} />
+			{mapBan?.selectedMap && (
+				<SelectedMapScreen
+					map={mapBan.selectedMap}
+					isParticipiant={isParticipant}
+				/>
 			)}
 			<TeamList team={team2} />
 		</div>

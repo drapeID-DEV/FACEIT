@@ -1,12 +1,14 @@
 'use client';
 
+import { WidgetBtn } from '@/shared/components/ui/WidgetBtn';
 import Image from 'next/image';
 
 interface Props {
 	map: string;
+	isParticipiant: boolean;
 }
 
-export function SelectedMapScreen({ map }: Props) {
+export function SelectedMapScreen({ map, isParticipiant }: Props) {
 	return (
 		<div className="flex flex-col items-center gap-6">
 			<span className="text-sm uppercase tracking-[0.35em] text-zinc-500">
@@ -27,6 +29,12 @@ export function SelectedMapScreen({ map }: Props) {
 					</p>
 				</div>
 			</div>
+			{isParticipiant && (
+				<WidgetBtn
+					title="COPY IP"
+					onClick={() => console.log('Copy IP')}
+				/>
+			)}
 		</div>
 	);
 }

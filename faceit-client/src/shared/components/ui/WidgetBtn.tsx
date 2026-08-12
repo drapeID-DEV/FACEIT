@@ -27,7 +27,7 @@ export function WidgetBtn({
 	...props
 }: PropsWithChildren<Props>) {
 	const classes =
-		'px-12 py-2 bg-widget text-white font-bold rounded-2xl text-xl h-max gap-3 flex ' +
+		'px-12 py-2 bg-widget text-white font-bold rounded-2xl text-xl h-max gap-3 flex w-fit ' +
 		className;
 
 	if (isLink) {

@@ -33,20 +33,6 @@ export class MatchBanService {
 		return maps[Math.floor(Math.random() * maps.length)]
 	}
 
-	private async startLiveMatch(matchId: string, map: string) {
-		return this.prismaService.match.update({
-			where: {
-				id: matchId
-			},
-			data: {
-				status: 'LIVE',
-				selectedMap: map,
-				currentBanTurn: null,
-				banDeadline: null
-			}
-		})
-	}
-
 	private async performBan(match: Match, map: string) {
 		const availableMaps = match.availableMaps.filter(
 			availableMap => availableMap !== map
@@ -177,11 +163,22 @@ export class MatchBanService {
 		const match = await this.prismaService.match.findUnique({
 			where: {
 				id: matchId
+			},
+			include: {
+				participants: true
 			}
 		})
 
 		if (!match) {
 			throw new NotFoundException('Match not found')
+		}
+
+		const participant = match.participants.find(p => p.userId === userId)
+
+		if (!participant) {
+			throw new ForbiddenException(
+				'You are not a participant of this match'
+			)
 		}
 
 		if (match.status !== 'MAP_BAN') {
@@ -204,7 +201,7 @@ export class MatchBanService {
 		return this.performBan(match, map)
 	}
 
-	async getState(matchId: string, userId: string) {
+	async getState(matchId: string) {
 		const match = await this.prismaService.match.findUnique({
 			where: {
 				id: matchId

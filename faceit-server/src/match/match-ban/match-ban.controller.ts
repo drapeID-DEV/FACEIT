@@ -15,6 +15,6 @@ export class MatchBanController {
 		@Param('id') matchId: string,
 		@Session() session: SessionData
 	) {
-		return this.matchBanService.getState(matchId, session.userId)
+		return this.matchBanService.getState(matchId)
 	}
 }

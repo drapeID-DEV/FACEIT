@@ -72,7 +72,6 @@ export interface IMapBanState {
 	team1LeaderId: string | null;
 	team2LeaderId: string | null;
 	banDeadline: string | null;
-	isMyTurn: boolean;
 }
 
 export interface ILeaderboardPlayer {
