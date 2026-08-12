@@ -35,7 +35,8 @@ export const matchmakingApi = api.injectEndpoints({
 			providesTags: ['Queue']
 		}),
 		getCurrentAcceptance: builder.query<IAcceptanceRes, void>({
-			query: () => '/matchmaking/acceptance'
+			query: () => '/matchmaking/acceptance',
+			providesTags: ['Acceptance']
 		})
 	})
 });

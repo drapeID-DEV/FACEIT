@@ -53,15 +53,15 @@ export class MatchAcceptanceService {
 	public accept(acceptanceId: string, userId: string) {
 		const acceptance = this.acceptances.get(acceptanceId)
 
+		if (!acceptance) {
+			return null
+		}
+
 		const isParticipant = acceptance.players.some(
 			player => player.userId === userId
 		)
 
 		if (!isParticipant) {
-			return null
-		}
-
-		if (!acceptance) {
 			return null
 		}
 

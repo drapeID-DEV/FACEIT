@@ -5,9 +5,7 @@ import { socket } from '@/shared/lib/socket';
 import { useGetCurrentAcceptanceQuery } from '@/store/api/matchmakingApi';
 
 export function AcceptanceModal() {
-	const { data } = useGetCurrentAcceptanceQuery(undefined, {
-		pollingInterval: 1000
-	});
+	const { data } = useGetCurrentAcceptanceQuery();
 
 	const [timeLeft, setTimeLeft] = useState(0);
 	const [isAccepted, setIsAccepted] = useState(false);

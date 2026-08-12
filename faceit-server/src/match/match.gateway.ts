@@ -1,3 +1,4 @@
+import { OnEvent } from '@nestjs/event-emitter'
 import {
 	ConnectedSocket,
 	MessageBody,
@@ -6,6 +7,7 @@ import {
 	WebSocketGateway,
 	WebSocketServer
 } from '@nestjs/websockets'
+import { Match } from 'generated/prisma'
 import { Server, Socket } from 'socket.io'
 
 import { MatchBanService } from './match-ban/match-ban.service'
@@ -53,12 +55,15 @@ export class MatchGateway implements OnGatewayConnection {
 			return
 		}
 
-		const state = await this.matchBanService.banMap(
+		await this.matchBanService.banMap(
 			body.matchId,
 			session.userId,
 			body.map
 		)
+	}
 
-		this.server.to(body.matchId).emit('mapBanUpdated', state)
+	@OnEvent('match.mapBanUpdated')
+	handleMapBanUpdated(payload: { matchId: string; match: Match }) {
+		this.server.to(payload.matchId).emit('mapBanUpdated', payload.match)
 	}
 }

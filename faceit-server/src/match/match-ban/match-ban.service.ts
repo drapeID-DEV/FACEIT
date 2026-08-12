@@ -5,6 +5,7 @@ import {
 	NotFoundException
 } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
+import { EventEmitter2 } from '@nestjs/event-emitter'
 import { Match } from 'generated/prisma'
 
 import { PrismaService } from '@/prisma/prisma.service'
@@ -15,7 +16,8 @@ import { getRandomLeader } from './helpers/getRandomLeader'
 export class MatchBanService {
 	constructor(
 		private readonly prismaService: PrismaService,
-		private readonly configService: ConfigService
+		private readonly configService: ConfigService,
+		private readonly eventEmitter: EventEmitter2
 	) {}
 
 	private readonly banTimers = new Map<string, NodeJS.Timeout>()
@@ -52,10 +54,6 @@ export class MatchBanService {
 
 		const isBanFinished = availableMaps.length === 1
 
-		if (isBanFinished) {
-			return this.startLiveMatch(match.id, availableMaps[0])
-		}
-
 		const nextTurn = match.currentBanTurn === 'TEAM1' ? 'TEAM2' : 'TEAM1'
 
 		const updatedMatch = await this.prismaService.match.update({
@@ -64,8 +62,12 @@ export class MatchBanService {
 			},
 			data: {
 				availableMaps,
-				currentBanTurn: nextTurn,
-				banDeadline: new Date(Date.now() + 30_000)
+				selectedMap: isBanFinished ? availableMaps[0] : undefined,
+				status: isBanFinished ? 'LIVE' : undefined,
+				currentBanTurn: isBanFinished ? null : nextTurn,
+				banDeadline: isBanFinished
+					? null
+					: new Date(Date.now() + 30_000)
 			}
 		})
 
@@ -79,6 +81,11 @@ export class MatchBanService {
 		} else {
 			this.scheduleAutoBan(match.id)
 		}
+
+		this.eventEmitter.emit('match.mapBanUpdated', {
+			matchId: match.id,
+			match: updatedMatch
+		})
 
 		return updatedMatch
 	}

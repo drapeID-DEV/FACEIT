@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
+import { EventEmitterModule } from '@nestjs/event-emitter'
 
 import { AuthModule } from './auth/auth.module'
 import { EmailConfirmationModule } from './auth/email-confirmation/email-confirmation.module'
@@ -7,6 +8,7 @@ import { MailModule } from './auth/mail/mail.module'
 import { PasswordRecoveryModule } from './auth/password-recovery/password-recovery.module'
 import { TwoFactorAuthModule } from './auth/two-factor-auth/two-factor-auth.module'
 import { CloudinaryModule } from './cloudinary/cloudinary.module'
+import { LeaderboardModule } from './leaderboard/leaderboard.module'
 import { IS_DEV_ENV } from './libs/common/utils/is-dev.util'
 import { MatchBanModule } from './match/match-ban/match-ban.module'
 import { MatchModule } from './match/match.module'
@@ -15,7 +17,6 @@ import { PlayerModule } from './player/player.module'
 import { PrismaModule } from './prisma/prisma.module'
 import { StatsModule } from './stats/stats.module'
 import { UserModule } from './user/user.module'
-import { LeaderboardModule } from './leaderboard/leaderboard.module';
 
 @Module({
 	imports: [
@@ -23,6 +24,7 @@ import { LeaderboardModule } from './leaderboard/leaderboard.module';
 			ignoreEnvFile: !IS_DEV_ENV,
 			isGlobal: true
 		}),
+		EventEmitterModule.forRoot(),
 		PrismaModule,
 		AuthModule,
 		UserModule,

@@ -16,11 +16,12 @@ export function SocketProvider({ children }: PropsWithChildren) {
 	const dispatch = useDispatch<AppDispatch>();
 
 	useEffect(() => {
-		const invalidate = (...tags: ('Queue' | 'CurrentMatch')[]) =>
-			dispatch(api.util.invalidateTags(tags));
+		const invalidate = (
+			...tags: ('Queue' | 'CurrentMatch' | 'Acceptance')[]
+		) => dispatch(api.util.invalidateTags(tags));
 
 		const onMatchReady = () => {
-			invalidate('Queue');
+			invalidate('Queue', 'Acceptance');
 		};
 
 		const onAcceptedUpdated = (data: {
@@ -44,11 +45,11 @@ export function SocketProvider({ children }: PropsWithChildren) {
 		};
 
 		const onMatchCancelled = () => {
-			invalidate('Queue');
+			invalidate('Queue', 'Acceptance');
 		};
 
 		const onMatchCreated = (match: { id: string }) => {
-			invalidate('Queue', 'CurrentMatch');
+			invalidate('Queue', 'CurrentMatch', 'Acceptance');
 
 			router.push(`/match/${match.id}`);
 		};

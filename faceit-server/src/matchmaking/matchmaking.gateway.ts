@@ -1,3 +1,4 @@
+import { OnModuleInit } from '@nestjs/common'
 import {
 	ConnectedSocket,
 	MessageBody,
@@ -24,7 +25,7 @@ import {
 	}
 })
 export class MatchmakingGateway
-	implements OnGatewayConnection, OnGatewayDisconnect
+	implements OnGatewayConnection, OnGatewayDisconnect, OnModuleInit
 {
 	constructor(
 		private readonly matchAcceptanceService: MatchAcceptanceService,
@@ -36,6 +37,15 @@ export class MatchmakingGateway
 
 	@WebSocketServer()
 	server: Server
+
+	onModuleInit() {
+		this.matchAcceptanceService.onExpired(acceptance => {
+			this.emitToPlayers(acceptance, 'matchCancelled', {
+				reason: 'timeout',
+				requeued: false
+			})
+		})
+	}
 
 	handleConnection(client: Socket) {
 		const session = client.request.session
