@@ -1,0 +1,7 @@
+export enum FriendshipStatusResponse {
+	NONE = 'NONE',
+	REQUEST_SENT = 'REQUEST_SENT',
+	REQUEST_RECEIVED = 'REQUEST_RECEIVED',
+	FRIENDS = 'FRIENDS',
+	SELF = 'SELF'
+}

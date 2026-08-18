@@ -28,6 +28,10 @@ model User {
   eloHistory EloHistory[]
   playerStats PlayerStats?
 
+  friendshipsAsUser1 Friendship[] @relation("FriendshipUser1")
+  friendshipsAsUser2 Friendship[] @relation("FriendshipUser2")
+  friendRequests Friendship[] @relation("FriendshipRequester")
+
   role UserRole @default(REGULAR)
 
   isVerified Boolean @default(false) @map("isverified")
@@ -188,6 +192,34 @@ model PlayerStats {
   updatedAt DateTime @updatedAt
 
   @@map("player_stats")
+}
+
+model Friendship {
+  id String @id @default(uuid())
+
+  user1 User @relation("FriendshipUser1", fields: [user1Id], references: [id], onDelete: Cascade)
+  user1Id String @map("user1_id")
+
+  user2 User @relation("FriendshipUser2", fields: [user2Id], references: [id], onDelete: Cascade)
+  user2Id String @map("user2_id")
+
+  requester User @relation("FriendshipRequester", fields: [requesterId], references: [id], onDelete: Cascade)
+  requesterId String @map("requester_id")
+
+  status FriendshipStatus @default(PENDING)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@unique([user1Id, user2Id])
+  @@index([requesterId])
+  @@index([status])
+  @@map("friendships")
+}
+
+enum FriendshipStatus {
+  PENDING
+  ACCEPTED
 }
 
 enum UserRole {
