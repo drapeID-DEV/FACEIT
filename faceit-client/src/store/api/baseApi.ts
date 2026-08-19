@@ -30,6 +30,15 @@ const appBaseQuery: BaseQueryFn<
 export const api = createApi({
 	reducerPath: 'api',
 	baseQuery: appBaseQuery,
-	tagTypes: ['Profile', 'CurrentMatch', 'Queue', 'MapBan', 'Acceptance'],
+	tagTypes: [
+		'Profile',
+		'CurrentMatch',
+		'Queue',
+		'MapBan',
+		'Acceptance',
+		'Friends',
+		'FriendRequests',
+		'FriendshipStatus'
+	],
 	endpoints: () => ({})
 });

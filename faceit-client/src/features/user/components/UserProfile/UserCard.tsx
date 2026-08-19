@@ -1,14 +1,15 @@
-import { IPlayerProfile } from '@/shared/types/api/responses';
+import { IPlayerProfileRes } from '@/shared/types/api/responses';
 import Image from 'next/image';
+import { FriendshipControls } from './FriendshipControls';
 
 interface Props {
-	userData: IPlayerProfile;
+	userData: IPlayerProfileRes;
 }
 
 export function UserCard({ userData }: Props) {
 	return (
 		<div className="flex flex-col items-center gap-4">
-			<div className="flex flex-col items-center gap-4 rounded-2xl border-2 border-accent bg-primary px-20 py-25">
+			<div className="box-border w-full flex flex-col items-center gap-4 rounded-2xl border-2 border-accent bg-primary px-20 py-25">
 				<div className="relative h-35 w-35 overflow-hidden rounded-full">
 					{userData.profilePic ? (
 						<Image
@@ -22,10 +23,9 @@ export function UserCard({ userData }: Props) {
 						<div className="h-full w-full bg-amber-600" />
 					)}
 				</div>
-
 				<h2 className="text-3xl font-bold">{userData.nickname}</h2>
 			</div>
-
+			<FriendshipControls userId={userData.id} />
 			<p className="text-sm font-bold text-white">
 				Joined {new Date(userData.createdAt).toLocaleDateString()}
 			</p>

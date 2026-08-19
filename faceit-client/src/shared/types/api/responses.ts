@@ -98,6 +98,25 @@ export interface IMyLeaderboardRes {
 	rank: number;
 }
 
+export enum FriendshipStatus {
+	NONE = 'NONE',
+	REQUEST_SENT = 'REQUEST_SENT',
+	REQUEST_RECEIVED = 'REQUEST_RECEIVED',
+	FRIENDS = 'FRIENDS',
+	SELF = 'SELF'
+}
+
+export interface IFriend {
+	id: string;
+	nickname: string;
+	profilePic: string | null;
+	elo: number;
+}
+
+export interface IFriendshipStatus {
+	status: FriendshipStatus;
+}
+
 export type TApiError = FetchBaseQueryError & {
 	data: {
 		statusCode: number;
