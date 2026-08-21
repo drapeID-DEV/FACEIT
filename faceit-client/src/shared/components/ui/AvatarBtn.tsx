@@ -1,11 +1,12 @@
 'use client';
 
-import { useGetMeQuery } from '@/store/api/userApi';
+import { useGetMeQuery, useGetPublicProfileQuery } from '@/store/api/userApi';
 import Image from 'next/image';
 import Link from 'next/link';
 
 interface BaseProps {
 	onClick?: () => void;
+	nickname: string | undefined;
 }
 
 interface LinkProps extends BaseProps {
@@ -20,13 +21,15 @@ interface ButtonProps extends BaseProps {
 
 type Props = LinkProps | ButtonProps;
 
-export function AvatarBtn({ onClick, isLink, href }: Props) {
-	const { data } = useGetMeQuery();
+export function AvatarBtn({ onClick, isLink, href, nickname }: Props) {
+	if (!nickname) return null;
+
+	const { data } = useGetPublicProfileQuery(nickname);
 
 	const avatar = data?.profilePic ? (
 		<Image
 			src={data.profilePic}
-			alt={`${data.nickname} avatar`}
+			alt={`${nickname} avatar`}
 			fill
 			className="w-full h-full object-cover"
 		/>

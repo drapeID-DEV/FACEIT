@@ -18,13 +18,21 @@ export function AccountPopup() {
 		);
 	}
 
+	if (!data) {
+		return null;
+	}
+
 	return (
 		<>
 			<div className="flex justify-between items-center p-4">
 				<div className="flex gap-2 items-center">
-					<AvatarBtn isLink href={`/players/${data?.nickname}`} />
+					<AvatarBtn
+						nickname={data.nickname}
+						isLink
+						href={`/players/${data.nickname}`}
+					/>
 					<div className="flex flex-col">
-						<p className="text-md">{data?.nickname}</p>
+						<p className="text-md">{data.nickname}</p>
 						<p className="text-sm text-widget font-bold">
 							ELO: {data?.elo}
 						</p>
