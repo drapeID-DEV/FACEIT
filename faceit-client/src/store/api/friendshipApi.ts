@@ -1,4 +1,8 @@
-import { IFriend, IFriendshipStatus } from '@/shared/types/api/responses';
+import {
+	IFriend,
+	IFriendshipStatus,
+	IInfoMessageRes
+} from '@/shared/types/api/responses';
 import { api } from './baseApi';
 
 export const friendshipApi = api.injectEndpoints({
@@ -20,7 +24,7 @@ export const friendshipApi = api.injectEndpoints({
 				}
 			]
 		}),
-		addFriend: builder.mutation<void, string>({
+		addFriend: builder.mutation<IInfoMessageRes, string>({
 			query: (userId) => ({
 				url: `/friends/${userId}`,
 				method: 'POST'
@@ -34,7 +38,7 @@ export const friendshipApi = api.injectEndpoints({
 				}
 			]
 		}),
-		acceptFriendRequest: builder.mutation<void, string>({
+		acceptFriendRequest: builder.mutation<IInfoMessageRes, string>({
 			query: (userId) => ({
 				url: `/friends/${userId}/accept`,
 				method: 'POST'
@@ -48,7 +52,7 @@ export const friendshipApi = api.injectEndpoints({
 				}
 			]
 		}),
-		declineFriendRequest: builder.mutation<void, string>({
+		declineFriendRequest: builder.mutation<IInfoMessageRes, string>({
 			query: (userId) => ({
 				url: `/friends/${userId}/decline`,
 				method: 'POST'
@@ -61,7 +65,7 @@ export const friendshipApi = api.injectEndpoints({
 				}
 			]
 		}),
-		removeFriend: builder.mutation<void, string>({
+		removeFriend: builder.mutation<IInfoMessageRes, string>({
 			query: (userId) => ({
 				url: `/friends/${userId}`,
 				method: 'DELETE'

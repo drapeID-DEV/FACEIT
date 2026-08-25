@@ -110,7 +110,7 @@ export class FriendshipService {
 			)
 		}
 
-		return this.prismaService.friendship.update({
+		await this.prismaService.friendship.update({
 			where: {
 				id: friendship.id
 			},
@@ -118,6 +118,10 @@ export class FriendshipService {
 				status: FriendshipStatus.ACCEPTED
 			}
 		})
+
+		return {
+			message: 'Friend request accepted successfully.'
+		}
 	}
 
 	public async declineFriendRequest(userId: string, requesterId: string) {
