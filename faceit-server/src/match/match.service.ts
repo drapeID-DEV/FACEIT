@@ -8,7 +8,10 @@ import { MatchStatus, MatchType } from 'generated/prisma'
 import { EloService } from '@/elo/elo.service'
 import { PrismaService } from '@/prisma/prisma.service'
 
-import { matchWithParticipantsInclude } from './constants/match.constants'
+import {
+	MatchWithParticipants,
+	matchWithParticipantsInclude
+} from './constants/match.constants'
 import { FinishMatchDto } from './dto/finish-match.dto'
 
 @Injectable()
@@ -17,6 +20,50 @@ export class MatchService {
 		private readonly prisma: PrismaService,
 		private readonly eloService: EloService
 	) {}
+
+	private mapPlayerStats(
+		playerStats: MatchWithParticipants['participants'][number]['user']['playerStats']
+	) {
+		if (!playerStats) {
+			return {
+				matches: 0,
+				wins: 0,
+				losses: 0,
+				winRate: 0,
+				averageKills: 0,
+				averageDeaths: 0,
+				averageAssists: 0,
+				kd: 0,
+				totalKills: 0,
+				totalDeaths: 0,
+				totalAssists: 0,
+				totalHeadshots: 0,
+				totalMvpRounds: 0
+			}
+		}
+
+		const matches = playerStats.totalMatches
+
+		return {
+			matches,
+			wins: playerStats.totalWins,
+			losses: playerStats.totalLosses,
+			winRate: matches > 0 ? (playerStats.totalWins / matches) * 100 : 0,
+			averageKills: matches > 0 ? playerStats.totalKills / matches : 0,
+			averageDeaths: matches > 0 ? playerStats.totalDeaths / matches : 0,
+			averageAssists:
+				matches > 0 ? playerStats.totalAssists / matches : 0,
+			kd:
+				playerStats.totalDeaths > 0
+					? playerStats.totalKills / playerStats.totalDeaths
+					: playerStats.totalKills,
+			totalKills: playerStats.totalKills,
+			totalDeaths: playerStats.totalDeaths,
+			totalAssists: playerStats.totalAssists,
+			totalHeadshots: playerStats.totalHeadshots,
+			totalMvpRounds: playerStats.totalMvpRounds
+		}
+	}
 
 	public async create(playerIds: string[]) {
 		const players = await this.prisma.user.findMany({
@@ -63,7 +110,18 @@ export class MatchService {
 			throw new NotFoundException('Match not found')
 		}
 
-		return match
+		return {
+			...match,
+			participants: match.participants.map(participant => ({
+				...participant,
+				user: {
+					...participant.user,
+					playerStats: this.mapPlayerStats(
+						participant.user.playerStats
+					)
+				}
+			}))
+		}
 	}
 
 	public async findMatchesByUserId(userId: string) {
