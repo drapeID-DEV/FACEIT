@@ -41,6 +41,8 @@ model User {
 
   accounts Account[]
 
+  aiRecommendations AiRecommendation[]
+
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
@@ -192,6 +194,21 @@ model PlayerStats {
   updatedAt DateTime @updatedAt
 
   @@map("player_stats")
+}
+
+model AiRecommendation {
+  id               String   @id @default(uuid())
+
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId           String   @unique
+
+  recommendations  Json
+  statisticsHash   String
+
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@map("ai_recommendations")
 }
 
 model Friendship {
