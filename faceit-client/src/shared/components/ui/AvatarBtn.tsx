@@ -1,6 +1,6 @@
 'use client';
 
-import { useGetMeQuery, useGetPublicProfileQuery } from '@/store/api/userApi';
+import { useGetPublicProfileQuery } from '@/store/api/userApi';
 import Image from 'next/image';
 import Link from 'next/link';
 

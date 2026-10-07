@@ -10,7 +10,8 @@ export const userApi = api.injectEndpoints({
 			providesTags: ['Profile']
 		}),
 		getPublicProfile: builder.query<IPlayerProfileRes, string>({
-			query: (nickname) => `/users/profile/${nickname}`
+			query: (nickname) => `/users/profile/${nickname}`,
+			providesTags: ['Profile']
 		}),
 		updateProfile: builder.mutation<void, TSettingsSchema>({
 			query: (data) => ({
