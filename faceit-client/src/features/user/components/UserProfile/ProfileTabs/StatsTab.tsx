@@ -4,47 +4,52 @@ import { PlayerStatsGrid } from '@/features/stats/PlayerStatsGrid';
 import { Loader } from '@/shared/components/ui/Loader';
 import { TApiError } from '@/shared/types/api/responses';
 import { notification } from '@/shared/utils/notifications';
-import { useGetPublicProfileQuery } from '@/store/api/userApi';
+import { useGetPlayerStatisticsQuery } from '@/store/api/playerApi';
+import { AiPerformanceAssistant } from '@/features/stats/AiPerformanceAssistant';
 
 interface Props {
 	nickname: string;
 }
 
 export function StatsTab({ nickname }: Props) {
-	const { data, isLoading, isError, error } =
-		useGetPublicProfileQuery(nickname);
+	const {
+		data: statistics,
+		isLoading: isStatisticsLoading,
+		isError: isStatisticsError,
+		error
+	} = useGetPlayerStatisticsQuery(nickname);
 
-	if (isLoading) {
-		return <Loader />;
-	}
+	if (isStatisticsLoading) return <Loader />;
 
-	if (isError) {
+	if (isStatisticsError) {
 		const err = error as TApiError;
 		notification.info(err.data.message);
 		return null;
 	}
 
-	if (!data) {
-		return null;
-	}
+	if (!statistics) return null;
 
 	return (
-		<div className="flex flex-wrap gap-10 justify-between">
-			<PlayerStatsGrid
-				variant="card"
-				playerStats={data?.playerStats}
-				items={[
-					'matches',
-					'wins',
-					'losses',
-					'winRate',
-					'avg',
-					'kd',
-					'kills',
-					'deaths',
-					'assists'
-				]}
-			/>
+		<div className="space-y-8">
+			<div className="flex flex-wrap gap-10 justify-between">
+				<PlayerStatsGrid
+					variant="card"
+					playerStats={statistics}
+					items={[
+						'matches',
+						'wins',
+						'losses',
+						'winRate',
+						'avg',
+						'kd',
+						'kills',
+						'deaths',
+						'assists'
+					]}
+				/>
+			</div>
+
+			<AiPerformanceAssistant nickname={nickname} />
 		</div>
 	);
 }

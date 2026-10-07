@@ -32,4 +32,13 @@ export class PlayerController {
 
 		return this.statsService.getEloHistory(user.id)
 	}
+
+	@Authorization()
+	@HttpCode(HttpStatus.OK)
+	@Get(':nickname/statistics')
+	async getPlayerStatistics(@Param('nickname') nickname: string) {
+		const user = await this.userService.findByNickname(nickname)
+
+		return this.statsService.getPlayerStatistics(user.id)
+	}
 }

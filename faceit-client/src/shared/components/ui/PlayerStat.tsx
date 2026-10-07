@@ -1,10 +1,11 @@
 interface Props {
 	title: string;
+	decimals?: number;
 	value?: number;
 	variant?: 'default' | 'card';
 }
 
-export function PlayerStat({ title, value, variant }: Props) {
+export function PlayerStat({ title, value, variant, decimals }: Props) {
 	const styles =
 		variant === 'card'
 			? 'flex flex-col text-[20px] items-center gap-2 py-4 min-w-30 rounded-xl border border-accent basis-[calc((100%-5rem)/3)] bg-primary'
@@ -12,7 +13,7 @@ export function PlayerStat({ title, value, variant }: Props) {
 
 	return (
 		<div className={styles}>
-			<p>{value}</p>
+			<p>{decimals !== undefined ? value?.toFixed(decimals) : value}</p>
 			<p>{title}</p>
 		</div>
 	);

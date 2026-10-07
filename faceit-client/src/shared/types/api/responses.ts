@@ -1,6 +1,6 @@
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
-import { IMatch, TMatchStatus, TMatchType } from '../match';
-import { IPlayerStats } from '../stats';
+import { IMatch, TMatchType } from '../match';
+import { IShortStats } from '../stats';
 
 export interface IInfoMessageRes {
 	message: string;
@@ -13,7 +13,7 @@ export interface IPlayerProfileRes {
 	elo: number;
 	createdAt: string;
 	updatedAt: string;
-	playerStats: IPlayerStats;
+	playerStats: IShortStats;
 }
 
 export interface ICurrentMatchRes {

@@ -1,9 +1,14 @@
 import { PlayerStat } from '@/shared/components/ui/PlayerStat';
-import { getPlayerStats } from '@/shared/lib/player-stats';
-import { IPlayerStats, PlayerStatKey } from '@/shared/types/stats';
+import { IPlayerStatistics, PlayerStatKey } from '@/shared/types/stats';
+
+interface StatItem {
+	title: string;
+	value: number;
+	decimals?: number;
+}
 
 interface Props {
-	playerStats: IPlayerStats;
+	playerStats: IPlayerStatistics;
 	items: PlayerStatKey[];
 	variant?: 'default' | 'card';
 }
@@ -13,32 +18,31 @@ export function PlayerStatsGrid({
 	items,
 	variant = 'default'
 }: Props) {
-	const { avg, kd, winRate } = getPlayerStats(playerStats);
-
-	const stats = {
+	const stats: Record<PlayerStatKey, StatItem> = {
 		matches: {
 			title: 'Matches',
-			value: playerStats.totalMatches
+			value: playerStats.matches
 		},
 		wins: {
 			title: 'Wins',
-			value: playerStats.totalWins
+			value: playerStats.wins
 		},
 		losses: {
 			title: 'Losses',
-			value: playerStats.totalLosses
+			value: playerStats.losses
 		},
 		winRate: {
 			title: 'Win %',
-			value: winRate
+			value: playerStats.winRate
 		},
 		avg: {
 			title: 'AVG',
-			value: avg
+			value: playerStats.averageKills
 		},
 		kd: {
 			title: 'K/D',
-			value: kd
+			value: playerStats.kd,
+			decimals: 2
 		},
 		kills: {
 			title: 'Kills',
@@ -61,6 +65,7 @@ export function PlayerStatsGrid({
 					key={item}
 					title={stats[item].title}
 					value={stats[item].value}
+					decimals={stats[item].decimals}
 					variant={variant}
 				/>
 			))}

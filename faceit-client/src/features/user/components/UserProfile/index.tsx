@@ -18,8 +18,15 @@ export function UserProfile({ nickname }: Props) {
 	}
 
 	if (!data) {
+		return null;
+	}
+
+	if (error) {
 		const err = error as TApiError;
-		notification.error(err.data.message);
+
+		notification.error(
+			err.data?.message ?? 'Failed to load player profile'
+		);
 
 		return null;
 	}
