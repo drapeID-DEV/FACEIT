@@ -18,6 +18,7 @@ import { PrismaModule } from './prisma/prisma.module'
 import { StatsModule } from './stats/stats.module'
 import { UserModule } from './user/user.module'
 import { FriendshipModule } from './friendship/friendship.module';
+import { AiModule } from './ai/ai.module';
 
 @Module({
 	imports: [
@@ -40,7 +41,8 @@ import { FriendshipModule } from './friendship/friendship.module';
 		StatsModule,
 		MatchBanModule,
 		LeaderboardModule,
-		FriendshipModule
+		FriendshipModule,
+		AiModule
 	]
 })
 export class AppModule {}
