@@ -153,6 +153,34 @@ export class UserService {
 		})
 	}
 
+	// steamId must come from SteamLinkService.verify, never from user input
+	public async linkSteam(
+		userId: string,
+		steamId: string
+	): Promise<'linked' | 'taken'> {
+		const steamOwner = await this.prismaService.user.findFirst({
+			where: { steamId, NOT: { id: userId } }
+		})
+
+		if (steamOwner) {
+			return 'taken'
+		}
+
+		await this.prismaService.user.update({
+			where: { id: userId },
+			data: { steamId }
+		})
+
+		return 'linked'
+	}
+
+	public async unlinkSteam(userId: string) {
+		return this.prismaService.user.update({
+			where: { id: userId },
+			data: { steamId: null }
+		})
+	}
+
 	public async uploadAvatar(userId: string, file: Express.Multer.File) {
 		const user = await this.findById(userId)
 

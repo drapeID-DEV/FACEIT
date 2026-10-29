@@ -8,15 +8,9 @@ export function AcceptanceModal() {
 	const { data } = useGetCurrentAcceptanceQuery();
 
 	const [timeLeft, setTimeLeft] = useState(0);
-	const [isAccepted, setIsAccepted] = useState(false);
-
-	useEffect(() => {
-		if (!data?.hasAcceptance) {
-			return;
-		}
-
-		setIsAccepted(data.acceptance.hasAccepted);
-	}, [data]);
+	// Id of the acceptance this client clicked Accept on. Not synced from `data`,
+	// since socket updates to `data` keep a stale `hasAccepted` and would reset it
+	const [acceptedId, setAcceptedId] = useState<string | null>(null);
 
 	useEffect(() => {
 		if (!data?.hasAcceptance) {
@@ -56,7 +50,10 @@ export function AcceptanceModal() {
 		return null;
 	}
 
-	const { acceptanceId, acceptedPlayers, totalPlayers } = data.acceptance;
+	const { acceptanceId, acceptedPlayers, totalPlayers, hasAccepted } =
+		data.acceptance;
+
+	const isAccepted = hasAccepted || acceptedId === acceptanceId;
 
 	const handleAccept = () => {
 		if (isAccepted) {
@@ -67,7 +64,7 @@ export function AcceptanceModal() {
 			acceptanceId
 		});
 
-		setIsAccepted(true);
+		setAcceptedId(acceptanceId);
 	};
 
 	return (

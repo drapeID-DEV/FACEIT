@@ -19,6 +19,7 @@ import { StatsModule } from './stats/stats.module'
 import { UserModule } from './user/user.module'
 import { FriendshipModule } from './friendship/friendship.module';
 import { AiModule } from './ai/ai.module';
+import { GameServerModule } from './game-server/game-server.module';
 
 @Module({
 	imports: [
@@ -42,7 +43,8 @@ import { AiModule } from './ai/ai.module';
 		MatchBanModule,
 		LeaderboardModule,
 		FriendshipModule,
-		AiModule
+		AiModule,
+		GameServerModule
 	]
 })
 export class AppModule {}

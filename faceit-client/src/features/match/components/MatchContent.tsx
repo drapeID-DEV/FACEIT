@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 import { notification } from '@/shared/utils/notifications';
@@ -8,6 +8,9 @@ import { notification } from '@/shared/utils/notifications';
 import { TeamList } from './TeamList';
 import { MapBanScreen } from './MapBan/MapBanScreen';
 import { SelectedMapScreen } from './SelectedMapScreen';
+import { MatchScoreHeader } from './MatchScoreHeader';
+import { MatchTab, MatchTabs } from './MatchTabs';
+import { Scoreboard } from './Scoreboard/Scoreboard';
 import { useMatch } from '../hooks/useMatch';
 import { useMatchSocket } from '../hooks/useMatchSocket';
 
@@ -17,6 +20,7 @@ interface Props {
 
 export function MatchContent({ matchId }: Props) {
 	const router = useRouter();
+	const [activeTab, setActiveTab] = useState<MatchTab>('overview');
 
 	const {
 		match,
@@ -31,7 +35,7 @@ export function MatchContent({ matchId }: Props) {
 		isLoading
 	} = useMatch(matchId);
 
-	useMatchSocket(matchId);
+	const { serverInfo, liveStats } = useMatchSocket(matchId);
 
 	useEffect(() => {
 		if (!isError) return;
@@ -48,25 +52,51 @@ export function MatchContent({ matchId }: Props) {
 		return <h2>Something went wrong</h2>;
 	}
 
+	const team1Name = `team_${team1?.[0]?.user.nickname ?? '1'}`;
+	const team2Name = `team_${team2?.[0]?.user.nickname ?? '2'}`;
+
 	return (
-		<div className="flex h-full items-center justify-center gap-8">
-			<TeamList team={team1} />
-			{mapBan?.status === 'MAP_BAN' && team1Leader && team2Leader && (
-				<MapBanScreen
-					team1Leader={team1Leader}
-					team2Leader={team2Leader}
-					matchId={matchId}
-					state={mapBan}
-					isMyTurn={isMyTurn}
+		<div className="flex h-full flex-col">
+			<MatchScoreHeader
+				match={match}
+				team1Name={team1Name}
+				team2Name={team2Name}
+				isLive={liveStats?.isLive ?? false}
+				round={liveStats?.isLive ? liveStats.round : null}
+			/>
+			<MatchTabs activeTab={activeTab} onChange={setActiveTab} />
+
+			{activeTab === 'overview' ? (
+				<div className="flex min-h-0 flex-1 items-center justify-center gap-8">
+					<TeamList team={team1} />
+					{mapBan?.status === 'MAP_BAN' && team1Leader && team2Leader && (
+						<MapBanScreen
+							team1Leader={team1Leader}
+							team2Leader={team2Leader}
+							matchId={matchId}
+							state={mapBan}
+							isMyTurn={isMyTurn}
+						/>
+					)}
+					{mapBan?.selectedMap && (
+						<SelectedMapScreen
+							map={mapBan.selectedMap}
+							isParticipiant={isParticipant && match.status === 'LIVE'}
+							serverInfo={serverInfo}
+						/>
+					)}
+					<TeamList team={team2} />
+				</div>
+			) : (
+				<Scoreboard
+					match={match}
+					team1={team1 ?? []}
+					team2={team2 ?? []}
+					team1Name={team1Name}
+					team2Name={team2Name}
+					liveStats={liveStats}
 				/>
 			)}
-			{mapBan?.selectedMap && (
-				<SelectedMapScreen
-					map={mapBan.selectedMap}
-					isParticipiant={isParticipant}
-				/>
-			)}
-			<TeamList team={team2} />
 		</div>
 	);
 }

@@ -1,11 +1,15 @@
 import {
 	BadRequestException,
 	Injectable,
+	Logger,
 	NotFoundException
 } from '@nestjs/common'
-import { MatchStatus, MatchType } from 'generated/prisma'
+import { EventEmitter2, OnEvent } from '@nestjs/event-emitter'
+import { MatchStatus, MatchType } from '../../generated/prisma'
 
 import { EloService } from '@/elo/elo.service'
+import { GameServerService } from '@/game-server/game-server.service'
+import { MatchGameOverPayload } from '@/game-server/live-match.service'
 import { PrismaService } from '@/prisma/prisma.service'
 
 import {
@@ -16,9 +20,13 @@ import { FinishMatchDto } from './dto/finish-match.dto'
 
 @Injectable()
 export class MatchService {
+	private readonly logger = new Logger(MatchService.name)
+
 	constructor(
 		private readonly prisma: PrismaService,
-		private readonly eloService: EloService
+		private readonly eloService: EloService,
+		private readonly eventEmitter: EventEmitter2,
+		private readonly gameServerService: GameServerService
 	) {}
 
 	private mapPlayerStats(
@@ -298,6 +306,22 @@ export class MatchService {
 
 			return this.findById(matchId)
 		})
+	}
+
+	@OnEvent('match.gameOver')
+	public async handleGameOver(payload: MatchGameOverPayload) {
+		const { matchId, ...data } = payload
+
+		try {
+			await this.finishMatch(matchId, data)
+			this.eventEmitter.emit('match.finished', { matchId })
+		} catch (error) {
+			this.logger.error(
+				`Failed to finish match ${matchId} after Game Over: ${(error as Error).message}`
+			)
+		} finally {
+			this.gameServerService.stop(matchId)
+		}
 	}
 
 	public async cancelMatch(matchId: string, reason?: string) {

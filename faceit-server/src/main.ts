@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config'
 import { NestFactory } from '@nestjs/core'
 import { RedisStore } from 'connect-redis'
 import cookieParser from 'cookie-parser'
+import { text } from 'express'
 import session from 'express-session'
 import ms, { StringValue } from 'ms'
 import { createClient } from 'redis'
@@ -22,6 +23,9 @@ async function bootstrap() {
 	await redisClient.connect()
 
 	app.use(cookieParser(config.getOrThrow('COOKIES_SECRET')))
+
+	// CS2 `logaddress_add_http` sends raw log lines as text/plain
+	app.use('/game-server', text({ type: '*/*', limit: '2mb' }))
 
 	app.useGlobalPipes(
 		new ValidationPipe({

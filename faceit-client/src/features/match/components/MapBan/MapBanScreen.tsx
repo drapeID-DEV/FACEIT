@@ -24,17 +24,20 @@ export function MapBanScreen({
 		state.currentBanTurn === 'TEAM1' ? team1Leader : team2Leader;
 
 	return (
-		<div className="flex flex-col gap-8">
-			<div className="text-center">
-				<p className="text-xs uppercase tracking-[0.3em] text-zinc-500">
-					Currently banning
-				</p>
-				<h2 className="mt-1 text-xl font-bold text-white">
-					team_{currentLeader.user.nickname}
-				</h2>
+		// Fills the available height; map cards share it so nothing scrolls
+		<div className="flex h-full min-h-0 w-100 flex-col gap-3 self-stretch py-3">
+			<div className="flex shrink-0 items-center justify-between gap-4">
+				<div>
+					<p className="text-xs uppercase tracking-[0.3em] text-zinc-500">
+						Currently banning
+					</p>
+					<h2 className="mt-1 text-xl font-bold text-white">
+						team_{currentLeader.user.nickname}
+					</h2>
+				</div>
+				<MapBanTimer key={state.banDeadline} deadline={state.banDeadline!} />
 			</div>
-			<MapBanTimer deadline={state.banDeadline!} />
-			<div className="flex flex-col gap-6 w-100">
+			<div className="flex min-h-0 flex-1 flex-col gap-2">
 				{MATCH_MAPS.map((map) => (
 					<MapCard
 						key={map}

@@ -6,10 +6,11 @@ import {
 } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { EventEmitter2 } from '@nestjs/event-emitter'
-import { Match } from 'generated/prisma'
 
+import { GameServerService } from '@/game-server/game-server.service'
 import { PrismaService } from '@/prisma/prisma.service'
 
+import { Match } from '../../../generated/prisma'
 import { getRandomLeader } from './helpers/getRandomLeader'
 
 @Injectable()
@@ -17,7 +18,8 @@ export class MatchBanService {
 	constructor(
 		private readonly prismaService: PrismaService,
 		private readonly configService: ConfigService,
-		private readonly eventEmitter: EventEmitter2
+		private readonly eventEmitter: EventEmitter2,
+		private readonly gameServerService: GameServerService
 	) {}
 
 	private readonly banTimers = new Map<string, NodeJS.Timeout>()
@@ -72,6 +74,11 @@ export class MatchBanService {
 			matchId: match.id,
 			match: updatedMatch
 		})
+
+		// Status updates (STARTING -> READY with address) reach clients via 'match.serverStatus'
+		if (isBanFinished && updatedMatch.selectedMap) {
+			this.gameServerService.start(match.id, updatedMatch.selectedMap)
+		}
 
 		return updatedMatch
 	}

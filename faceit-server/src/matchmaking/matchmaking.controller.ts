@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Post, Req, Session } from '@nestjs/common'
+import {
+	Body,
+	Controller,
+	ForbiddenException,
+	Get,
+	Post,
+	Req,
+	Session
+} from '@nestjs/common'
 import { Request } from 'express'
 import { SessionData } from 'express-session'
 
@@ -21,6 +29,13 @@ export class MatchmakingController {
 	@Post('queue/join')
 	async joinQueue(@Req() req: Request, @Body() dto: JoinQueueDto) {
 		const user = await this.userService.findById(req.session.userId)
+
+		// Live CS2 stats are matched by SteamID, so unlinked players cannot play
+		if (!user.steamId) {
+			throw new ForbiddenException(
+				'Link your Steam account in account settings to play.'
+			)
+		}
 
 		return this.matchmakingService.joinQueue({
 			userId: user.id,

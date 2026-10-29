@@ -21,6 +21,13 @@ export const userApi = api.injectEndpoints({
 			}),
 			invalidatesTags: ['Profile']
 		}),
+		unlinkSteam: builder.mutation<void, void>({
+			query: () => ({
+				url: '/users/steam',
+				method: 'DELETE'
+			}),
+			invalidatesTags: ['Profile']
+		}),
 		uploadAvatar: builder.mutation<void, FormData>({
 			query: (data) => ({
 				url: '/users/profile-picture',
@@ -36,5 +43,6 @@ export const {
 	useGetMeQuery,
 	useGetPublicProfileQuery,
 	useUpdateProfileMutation,
+	useUnlinkSteamMutation,
 	useUploadAvatarMutation
 } = userApi;

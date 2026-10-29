@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common'
 
 import { EloModule } from '@/elo/elo.module'
+import { GameServerModule } from '@/game-server/game-server.module'
 import { PrismaModule } from '@/prisma/prisma.module'
 import { UserModule } from '@/user/user.module'
 
@@ -10,7 +11,7 @@ import { MatchGateway } from './match.gateway'
 import { MatchService } from './match.service'
 
 @Module({
-	imports: [PrismaModule, UserModule, EloModule],
+	imports: [PrismaModule, UserModule, EloModule, GameServerModule],
 	controllers: [MatchController],
 	providers: [MatchService, MatchGateway, MatchBanService],
 	exports: [MatchService, MatchBanService]

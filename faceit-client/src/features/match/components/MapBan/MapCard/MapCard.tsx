@@ -14,11 +14,11 @@ export function MapCard({ map, isAvailable, isMyTurn, onBan }: Props) {
 	return (
 		<div
 			className={clsx(
-				'flex text-sm items-center gap-4 rounded-xl border border-zinc-800 bg-accent px-3 py-2 transition',
+				'flex min-h-0 max-h-20 flex-1 text-sm items-center gap-4 rounded-xl border border-zinc-800 bg-accent px-3 py-1.5 transition',
 				!isAvailable && 'opacity-50'
 			)}
 		>
-			<div className="relative h-14 w-24 shrink-0 overflow-hidden rounded-md">
+			<div className="relative aspect-video h-full max-h-14 shrink-0 overflow-hidden rounded-md">
 				<Image
 					src={`/maps/${map}.webp`}
 					alt={map}
@@ -35,13 +35,13 @@ export function MapCard({ map, isAvailable, isMyTurn, onBan }: Props) {
 				isMyTurn && (
 					<button
 						onClick={onBan}
-						className="rounded-md border border-widget bg-widget px-4 py-2 text-sm font-semibold text-white transition hover:bg-orange-600"
+						className="rounded-md border border-widget bg-widget px-4 py-1.5 text-sm font-semibold text-white transition hover:bg-orange-600"
 					>
 						BAN
 					</button>
 				)
 			) : (
-				<span className="rounded-md border border-red-500 px-4 py-2 text-sm font-semibold uppercase tracking-wider text-red-500">
+				<span className="rounded-md border border-red-500 px-4 py-1.5 text-sm font-semibold uppercase tracking-wider text-red-500">
 					BANNED
 				</span>
 			)}

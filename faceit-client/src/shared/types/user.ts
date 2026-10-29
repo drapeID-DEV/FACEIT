@@ -20,6 +20,7 @@ export interface IUserData {
 	email: string;
 	password: string;
 	nickname: string;
+	steamId: string | null;
 	elo: number;
 	profilePic: string;
 	role: string;

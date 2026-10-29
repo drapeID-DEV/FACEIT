@@ -19,6 +19,8 @@ model User {
   password String?
 
   nickname String @unique
+  // SteamID64, links CS2 server log events to this user
+  steamId String? @unique
   profilePic String?
   profilePictureId String?
 

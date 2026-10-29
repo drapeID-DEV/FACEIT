@@ -1,4 +1,4 @@
-import { MatchType } from 'generated/prisma'
+import { MatchType } from '../../../generated/prisma'
 
 export interface QueuePlayer {
 	userId: string

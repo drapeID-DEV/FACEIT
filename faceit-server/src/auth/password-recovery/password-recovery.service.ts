@@ -4,7 +4,7 @@ import {
 	NotFoundException
 } from '@nestjs/common'
 import { hash } from 'argon2'
-import { TokenType } from 'generated/prisma'
+import { TokenType } from '../../../generated/prisma'
 import { v4 as uuidv4 } from 'uuid'
 
 import { PrismaService } from '@/prisma/prisma.service'

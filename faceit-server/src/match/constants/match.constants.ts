@@ -1,4 +1,4 @@
-import { Prisma } from 'generated/prisma'
+import { Prisma } from '../../../generated/prisma'
 
 export const matchWithParticipantsInclude =
 	Prisma.validator<Prisma.MatchInclude>()({

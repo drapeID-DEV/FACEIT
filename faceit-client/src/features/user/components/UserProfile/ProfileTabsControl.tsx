@@ -19,8 +19,6 @@ export function ProfileTabsControl({ nickname }: Props) {
 					? `/players/${nickname}/${tab.segment}`
 					: `/players/${nickname}`;
 
-				console.log(href);
-
 				return (
 					<ProfileTabBtn
 						key={tab.title}

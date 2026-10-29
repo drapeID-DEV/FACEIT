@@ -6,6 +6,7 @@ interface Props {
 	deadline: string;
 }
 
+// Remount with `key={deadline}` to restart for a new turn
 export function MapBanTimer({ deadline }: Props) {
 	const getTime = () =>
 		Math.max(
@@ -16,22 +17,21 @@ export function MapBanTimer({ deadline }: Props) {
 	const [seconds, setSeconds] = useState(getTime);
 
 	useEffect(() => {
-		setSeconds(getTime());
-
 		const interval = setInterval(() => {
 			setSeconds(getTime());
 		}, 1000);
 
 		return () => clearInterval(interval);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [deadline]);
 
 	return (
-		<div className="flex flex-col items-center gap-2">
-			<p className="text-sm uppercase tracking-widest text-zinc-500">
+		<div className="flex items-center gap-3">
+			<p className="text-xs uppercase tracking-widest text-zinc-500">
 				Time left
 			</p>
 			<div
-				className={`flex h-20 w-20 items-center justify-center rounded-full border-4 text-3xl font-bold transition-colors ${
+				className={`flex h-14 w-14 items-center justify-center rounded-full border-4 text-2xl font-bold transition-colors ${
 					seconds <= 5
 						? 'border-red-500 text-red-500'
 						: 'border-widget text-widget'

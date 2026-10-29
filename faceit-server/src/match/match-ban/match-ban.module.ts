@@ -2,12 +2,11 @@ import { Module } from '@nestjs/common'
 
 import { UserModule } from '@/user/user.module'
 
+import { MatchModule } from '../match.module'
 import { MatchBanController } from './match-ban.controller'
-import { MatchBanService } from './match-ban.service'
 
 @Module({
-	imports: [UserModule],
-	controllers: [MatchBanController],
-	providers: [MatchBanService]
+	imports: [MatchModule, UserModule],
+	controllers: [MatchBanController]
 })
 export class MatchBanModule {}

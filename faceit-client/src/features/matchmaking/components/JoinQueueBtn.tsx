@@ -1,8 +1,12 @@
+import Link from 'next/link';
+import { TriangleAlert } from 'lucide-react';
+
 import { WidgetBtn } from '@/shared/components/ui/WidgetBtn';
 import { TApiError } from '@/shared/types/api/responses';
 import { TMatchType } from '@/shared/types/match';
 import { notification } from '@/shared/utils/notifications';
 import { useJoinQueueMutation } from '@/store/api/matchmakingApi';
+import { useGetMeQuery } from '@/store/api/userApi';
 
 interface Props {
 	matchType: TMatchType;
@@ -10,10 +14,14 @@ interface Props {
 
 export function JoinQueueBtn({ matchType }: Props) {
 	const [joinQueue] = useJoinQueueMutation();
+	const { data: me, isLoading } = useGetMeQuery();
+
+	// Live match stats are matched by SteamID, the server enforces this too
+	const hasSteam = !!me?.steamId;
 
 	const handleJoinQueue = async () => {
 		try {
-			const response = await joinQueue({
+			await joinQueue({
 				matchType
 			}).unwrap();
 		} catch (error) {
@@ -22,5 +30,27 @@ export function JoinQueueBtn({ matchType }: Props) {
 		}
 	};
 
-	return <WidgetBtn title="Play" onClick={handleJoinQueue}></WidgetBtn>;
+	return (
+		<div className="flex flex-col items-start gap-4">
+			<WidgetBtn
+				title="Play"
+				onClick={handleJoinQueue}
+				disabled={isLoading || !hasSteam}
+			></WidgetBtn>
+			{!isLoading && !hasSteam && (
+				<div className="flex max-w-md items-start gap-3 rounded-xl border border-amber-500/40 bg-amber-500/10 p-4 text-sm text-amber-200">
+					<TriangleAlert className="mt-0.5 shrink-0" size={18} />
+					<p>
+						You need to link your Steam account before playing.{' '}
+						<Link
+							href="/settings/account"
+							className="font-semibold text-white underline hover:text-widget"
+						>
+							Link Steam in account settings
+						</Link>
+					</p>
+				</div>
+			)}
+		</div>
+	);
 }

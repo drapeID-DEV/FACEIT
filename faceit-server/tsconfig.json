@@ -37,6 +37,11 @@
 		"noFallthroughCasesInSwitch": false,
 		"jsx": "react"
 	},
+	"tsc-alias": {
+		"replacers": {
+			"base-url": { "enabled": false }
+		}
+	},
 	"include": ["src/**/*"],
 	"exclude": ["node_modules", "dist", "prisma.config.ts"]
 }
