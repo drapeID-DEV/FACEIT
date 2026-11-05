@@ -1,6 +1,7 @@
 import { AccountPopup } from '@/features/popups/components/AccountPopup';
 import { FriendsPopup } from '@/features/popups/components/FriendsPopup';
 import { MatchesPopup } from '@/features/popups/components/MatchesPopup';
+import { NewsPopup } from '@/features/popups/components/NewsPopup';
 import { NotificationsPopup } from '@/features/popups/components/NotificationsPopup';
 import { IMenuItem } from '@/shared/types/menu';
 
@@ -8,10 +9,16 @@ export const POPUPS = {
 	account: AccountPopup,
 	matches: MatchesPopup,
 	notifications: NotificationsPopup,
-	friends: FriendsPopup
+	friends: FriendsPopup,
+	news: NewsPopup
 } as const;
 
-export type PopupType = 'account' | 'matches' | 'notifications' | 'friends';
+export type PopupType =
+	| 'account'
+	| 'matches'
+	| 'notifications'
+	| 'friends'
+	| 'news';
 
 export const ACCOUNT_MENU: IMenuItem[] = [
 	{

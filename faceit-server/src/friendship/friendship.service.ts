@@ -4,6 +4,7 @@ import {
 	Injectable,
 	NotFoundException
 } from '@nestjs/common'
+import { EventEmitter2 } from '@nestjs/event-emitter'
 
 import { PrismaService } from '@/prisma/prisma.service'
 
@@ -12,7 +13,10 @@ import { FriendshipStatusResponse } from './frienship-status/frienship-status'
 
 @Injectable()
 export class FriendshipService {
-	public constructor(private readonly prismaService: PrismaService) {}
+	public constructor(
+		private readonly prismaService: PrismaService,
+		private readonly eventEmitter: EventEmitter2
+	) {}
 
 	private getUserPair(userId: string, targetUserId: string) {
 		return userId < targetUserId
@@ -56,13 +60,20 @@ export class FriendshipService {
 
 		// No existing relationship
 		if (!friendship) {
-			return this.prismaService.friendship.create({
+			const created = await this.prismaService.friendship.create({
 				data: {
 					...pair,
 					requesterId: userId,
 					status: FriendshipStatus.PENDING
 				}
 			})
+
+			this.eventEmitter.emit('friend.requested', {
+				userId: targetUserId,
+				actorId: userId
+			})
+
+			return created
 		}
 
 		// Already friends
@@ -77,7 +88,7 @@ export class FriendshipService {
 
 		// The other user sent the request first.
 		// Accept it automatically.
-		return this.prismaService.friendship.update({
+		const accepted = await this.prismaService.friendship.update({
 			where: {
 				id: friendship.id
 			},
@@ -85,6 +96,13 @@ export class FriendshipService {
 				status: FriendshipStatus.ACCEPTED
 			}
 		})
+
+		this.eventEmitter.emit('friend.accepted', {
+			userId: targetUserId,
+			actorId: userId
+		})
+
+		return accepted
 	}
 
 	public async acceptFriendRequest(userId: string, requesterId: string) {
@@ -117,6 +135,11 @@ export class FriendshipService {
 			data: {
 				status: FriendshipStatus.ACCEPTED
 			}
+		})
+
+		this.eventEmitter.emit('friend.accepted', {
+			userId: requesterId,
+			actorId: userId
 		})
 
 		return {

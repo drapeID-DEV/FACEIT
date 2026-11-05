@@ -75,7 +75,7 @@ export class TwoFactorAuthService {
 
 		if (hasExpired) {
 			await this.prismaService.token.delete({
-				where: { id: existingToken.id, type: TokenType.VERIFICATION }
+				where: { id: existingToken.id, type: TokenType.TWO_FACTOR }
 			})
 			throw new BadRequestException(
 				'Two-factor token has expired. Please request a new verification token.'

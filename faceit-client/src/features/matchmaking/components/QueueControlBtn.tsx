@@ -1,16 +1,27 @@
 'use client';
 
 import { WidgetBtn } from '@/shared/components/ui/WidgetBtn';
+import { TMatchType } from '@/shared/types/match';
 import {
 	useGetCurrentMatchQuery,
 	useGetQueueStatusQuery
 } from '@/store/api/matchmakingApi';
+import { useGetPartyQuery } from '@/store/api/partyApi';
+import { useGetMeQuery } from '@/store/api/userApi';
 import { JoinQueueBtn } from './JoinQueueBtn';
 import { LeaveQueueBtn } from './LeaveQueueBtn';
 
-export function QueueControlBtn() {
-	const { data: currentMatch, isLoading } = useGetCurrentMatchQuery();
+interface Props {
+	matchType: TMatchType;
+}
+
+export function QueueControlBtn({ matchType }: Props) {
+	const { data: me } = useGetMeQuery();
+	const { data: currentMatch } = useGetCurrentMatchQuery();
 	const { data: queue } = useGetQueueStatusQuery();
+	const { data: partyState } = useGetPartyQuery();
+
+	const party = partyState?.party;
 
 	if (currentMatch?.hasActiveMatch) {
 		return (
@@ -26,7 +37,13 @@ export function QueueControlBtn() {
 		return <LeaveQueueBtn joinedAt={queue.joinedAt} />;
 	}
 
-	return <JoinQueueBtn matchType="ONE_VS_ONE" />;
+	if (party && party.members.length > 1 && party.leaderId !== me?.id) {
+		return (
+			<p className="py-2 text-neutral-400">
+				Waiting for the party leader to start the queue...
+			</p>
+		);
+	}
 
-	// <button onClick={handleOnPlay}>Play</button>;
+	return <JoinQueueBtn matchType={matchType} />;
 }

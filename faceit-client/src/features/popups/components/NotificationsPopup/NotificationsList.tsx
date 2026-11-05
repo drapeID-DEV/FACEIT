@@ -1,13 +1,16 @@
-import { NOTIFICATIONS } from '@/shared/data/notifications.data';
+import { INotification } from '@/shared/types/notifications';
+
 import { NotificationItem } from './NotificationItem';
 
-interface Props {}
+interface Props {
+	notifications: INotification[];
+}
 
-export function NotificationsList({}: Props) {
+export function NotificationsList({ notifications }: Props) {
 	return (
-		<ul className="flex flex-col gap-10 px-5 mb-3 overflow-y-auto">
-			{NOTIFICATIONS.map((notif, index) => (
-				<NotificationItem key={index} notif={notif} />
+		<ul className="flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto px-2 py-3">
+			{notifications.map((notif) => (
+				<NotificationItem key={notif.id} notif={notif} />
 			))}
 		</ul>
 	);

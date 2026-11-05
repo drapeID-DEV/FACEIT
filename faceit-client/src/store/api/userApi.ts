@@ -35,6 +35,25 @@ export const userApi = api.injectEndpoints({
 				body: data
 			}),
 			invalidatesTags: ['Profile']
+		}),
+		updateUserRole: builder.mutation<void, { id: string; role: string }>({
+			query: ({ id, role }) => ({
+				url: `/users/${id}/role`,
+				method: 'PATCH',
+				body: { role }
+			}),
+			invalidatesTags: ['Profile']
+		}),
+		updateUserBan: builder.mutation<
+			void,
+			{ id: string; isBanned: boolean }
+		>({
+			query: ({ id, isBanned }) => ({
+				url: `/users/${id}/ban`,
+				method: 'PATCH',
+				body: { isBanned }
+			}),
+			invalidatesTags: ['Profile']
 		})
 	})
 });
@@ -44,5 +63,7 @@ export const {
 	useGetPublicProfileQuery,
 	useUpdateProfileMutation,
 	useUnlinkSteamMutation,
-	useUploadAvatarMutation
+	useUploadAvatarMutation,
+	useUpdateUserRoleMutation,
+	useUpdateUserBanMutation
 } = userApi;

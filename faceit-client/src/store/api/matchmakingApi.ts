@@ -37,6 +37,9 @@ export const matchmakingApi = api.injectEndpoints({
 		getCurrentAcceptance: builder.query<IAcceptanceRes, void>({
 			query: () => '/matchmaking/acceptance',
 			providesTags: ['Acceptance']
+		}),
+		getMatchmakingConfig: builder.query<{ teamSize: number }, void>({
+			query: () => '/matchmaking/config'
 		})
 	})
 });
@@ -46,5 +49,6 @@ export const {
 	useJoinQueueMutation,
 	useGetQueueStatusQuery,
 	useLeaveQueueMutation,
-	useGetCurrentAcceptanceQuery
+	useGetCurrentAcceptanceQuery,
+	useGetMatchmakingConfigQuery
 } = matchmakingApi;

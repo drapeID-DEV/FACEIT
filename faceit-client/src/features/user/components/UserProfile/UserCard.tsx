@@ -1,5 +1,6 @@
 import { IPlayerProfileRes } from '@/shared/types/api/responses';
 import Image from 'next/image';
+import { AdminUserControls } from './AdminUserControls';
 import { FriendshipControls } from './FriendshipControls';
 
 interface Props {
@@ -26,6 +27,7 @@ export function UserCard({ userData }: Props) {
 				<h2 className="text-3xl font-bold">{userData.nickname}</h2>
 			</div>
 			<FriendshipControls userId={userData.id} />
+			<AdminUserControls userData={userData} />
 			<p className="text-sm font-bold text-white">
 				Joined {new Date(userData.createdAt).toLocaleDateString()}
 			</p>

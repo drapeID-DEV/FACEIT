@@ -28,7 +28,9 @@ export function PopupMenu() {
 		const handleClickOutside = (event: MouseEvent) => {
 			if (
 				popupRef.current &&
-				!popupRef.current.contains(event.target as Node)
+				!popupRef.current.contains(event.target as Node) &&
+				// Sidebar triggers toggle the popup themselves on click.
+				!(event.target as Element).closest('[data-popup-trigger]')
 			) {
 				dispatch(closePopupMenu());
 			}

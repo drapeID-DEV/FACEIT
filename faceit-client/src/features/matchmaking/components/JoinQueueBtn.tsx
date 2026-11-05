@@ -18,6 +18,7 @@ export function JoinQueueBtn({ matchType }: Props) {
 
 	// Live match stats are matched by SteamID, the server enforces this too
 	const hasSteam = !!me?.steamId;
+	const isBanned = !!me?.isBanned;
 
 	const handleJoinQueue = async () => {
 		try {
@@ -31,13 +32,19 @@ export function JoinQueueBtn({ matchType }: Props) {
 	};
 
 	return (
-		<div className="flex flex-col items-start gap-4">
+		<div className="flex flex-col items-center gap-4">
 			<WidgetBtn
-				title="Play"
+				title="Find match"
 				onClick={handleJoinQueue}
-				disabled={isLoading || !hasSteam}
+				disabled={isLoading || !hasSteam || isBanned}
 			></WidgetBtn>
-			{!isLoading && !hasSteam && (
+			{isBanned && (
+				<div className="flex max-w-md items-start gap-3 rounded-xl border border-red-500/40 bg-red-500/10 p-4 text-sm text-red-200">
+					<TriangleAlert className="mt-0.5 shrink-0" size={18} />
+					<p>Your account is banned from matchmaking.</p>
+				</div>
+			)}
+			{!isLoading && !isBanned && !hasSteam && (
 				<div className="flex max-w-md items-start gap-3 rounded-xl border border-amber-500/40 bg-amber-500/10 p-4 text-sm text-amber-200">
 					<TriangleAlert className="mt-0.5 shrink-0" size={18} />
 					<p>

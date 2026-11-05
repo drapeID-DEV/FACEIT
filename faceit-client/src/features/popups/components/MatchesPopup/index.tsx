@@ -1,21 +1,14 @@
+import { skipToken } from '@reduxjs/toolkit/query';
 import { useGetMeQuery } from '@/store/api/userApi';
 import { PopupMatchesList } from './PopupMatchesList';
-import { notification } from '@/shared/utils/notifications';
-import { TApiError } from '@/shared/types/api/responses';
 import { Loader } from '@/shared/components/ui/Loader';
 import { useGetMatchesHistoryQuery } from '@/store/api/playerApi';
 
 export function MatchesPopup() {
-	const { data: user, isLoading: userLoad, error: userErr } = useGetMeQuery();
-
-	if (!user) {
-		const err = userErr as TApiError;
-		notification.info(err.data.message);
-		return <p>User not found</p>;
-	}
+	const { data: user, isLoading: userLoad } = useGetMeQuery();
 
 	const { data: matches, isLoading: matchesLoad } = useGetMatchesHistoryQuery(
-		user.nickname
+		user?.nickname ?? skipToken
 	);
 
 	if (userLoad || matchesLoad) {
@@ -24,6 +17,10 @@ export function MatchesPopup() {
 				<Loader />
 			</div>
 		);
+	}
+
+	if (!user) {
+		return <p className="text-sm text-center">User not found</p>;
 	}
 
 	return <PopupMatchesList matches={matches} />;

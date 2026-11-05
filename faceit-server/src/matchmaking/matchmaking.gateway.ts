@@ -1,4 +1,4 @@
-import { OnModuleInit } from '@nestjs/common'
+import { Logger } from '@nestjs/common'
 import {
 	ConnectedSocket,
 	MessageBody,
@@ -10,6 +10,7 @@ import {
 } from '@nestjs/websockets'
 import { Server, Socket } from 'socket.io'
 
+import { userRoom } from '@/libs/common/utils/user-room.util'
 import { MatchBanService } from '@/match/match-ban/match-ban.service'
 import { MatchService } from '@/match/match.service'
 
@@ -25,27 +26,18 @@ import {
 	}
 })
 export class MatchmakingGateway
-	implements OnGatewayConnection, OnGatewayDisconnect, OnModuleInit
+	implements OnGatewayConnection, OnGatewayDisconnect
 {
+	private readonly logger = new Logger(MatchmakingGateway.name)
+
 	constructor(
 		private readonly matchAcceptanceService: MatchAcceptanceService,
 		private readonly matchService: MatchService,
 		private readonly matchBanService: MatchBanService
 	) {}
 
-	private readonly connectedUsers = new Map<string, string>()
-
 	@WebSocketServer()
 	server: Server
-
-	onModuleInit() {
-		this.matchAcceptanceService.onExpired(acceptance => {
-			this.emitToPlayers(acceptance, 'matchCancelled', {
-				reason: 'timeout',
-				requeued: false
-			})
-		})
-	}
 
 	handleConnection(client: Socket) {
 		const session = client.request.session
@@ -55,7 +47,7 @@ export class MatchmakingGateway
 			return
 		}
 
-		this.connectedUsers.set(session.userId, client.id)
+		client.join(userRoom(session.userId))
 
 		console.log(`User ${session.userId} connected (${client.id})`)
 	}
@@ -67,8 +59,6 @@ export class MatchmakingGateway
 			return
 		}
 
-		this.connectedUsers.delete(session.userId)
-
 		console.log(`User ${session.userId} disconnected`)
 	}
 
@@ -78,13 +68,7 @@ export class MatchmakingGateway
 		payload: unknown
 	) {
 		for (const player of acceptance.players) {
-			const socketId = this.connectedUsers.get(player.userId)
-
-			if (!socketId) {
-				continue
-			}
-
-			this.server.to(socketId).emit(event, payload)
+			this.server.to(userRoom(player.userId)).emit(event, payload)
 		}
 	}
 
@@ -117,46 +101,57 @@ export class MatchmakingGateway
 			return
 		}
 
-		const match = await this.matchService.create(
-			acceptance.players.map(player => player.userId)
-		)
-
-		const banState = await this.matchBanService.start(match.id)
-
+		// Removed before the first await, a repeated accept must not create a second match
 		this.matchAcceptanceService.remove(acceptance.id)
 
-		this.emitToPlayers(acceptance, 'matchCreated', {
-			id: match.id,
-			status: match.status,
-			banState
-		})
-	}
+		try {
+			const match = await this.matchService.create(
+				acceptance.teams.map(team =>
+					team.flatMap(entry =>
+						entry.players.map(player => player.userId)
+					)
+				),
+				acceptance.matchType
+			)
 
-	public notifyMatchReady(acceptance: MatchAcceptance) {
-		for (const player of acceptance.players) {
-			const socketId = this.connectedUsers.get(player.userId)
+			const banState = await this.matchBanService.start(match.id)
 
-			if (!socketId) continue
+			this.emitToPlayers(acceptance, 'matchCreated', {
+				id: match.id,
+				status: match.status,
+				banState
+			})
+		} catch (error) {
+			this.logger.error(
+				`Failed to create match: ${(error as Error).message}`
+			)
 
-			this.server.to(socketId).emit('matchReady', {
-				acceptanceId: acceptance.id,
-				expiresAt: acceptance.expiresAt,
-				acceptedPlayers: 0,
-				totalPlayers: acceptance.players.length
+			this.emitToPlayers(acceptance, 'matchCancelled', {
+				reason: 'error',
+				requeued: false
 			})
 		}
 	}
 
+	public notifyMatchReady(acceptance: MatchAcceptance) {
+		this.emitToPlayers(acceptance, 'matchReady', {
+			acceptanceId: acceptance.id,
+			expiresAt: acceptance.expiresAt,
+			acceptedPlayers: 0,
+			totalPlayers: acceptance.players.length
+		})
+	}
+
 	public notifyMatchCancelled(userId: string, requeued: boolean) {
-		const socketId = this.connectedUsers.get(userId)
-
-		if (!socketId) {
-			return
-		}
-
-		this.server.to(socketId).emit('matchCancelled', {
+		this.server.to(userRoom(userId)).emit('matchCancelled', {
 			reason: 'timeout',
 			requeued
 		})
+	}
+
+	public notifyQueueUpdated(userIds: string[]) {
+		for (const userId of userIds) {
+			this.server.to(userRoom(userId)).emit('queueUpdated')
+		}
 	}
 }

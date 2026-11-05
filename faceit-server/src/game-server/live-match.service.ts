@@ -256,20 +256,34 @@ export class LiveMatchService {
 	}
 
 	private applyTeamScore(state: LiveMatchState, side: Side, score: number) {
-		const players = [...state.players.values()]
-
 		// Sides swap at halftime, so resolve the team from who is on that side right now
-		let team = players.find(player => player.side === side)?.team
+		let team = this.teamOnSide(state, side)
 
 		if (!team) {
-			const otherTeam = players.find(
-				player => player.side && player.side !== side
-			)?.team
+			const otherTeam = this.teamOnSide(
+				state,
+				side === 'CT' ? 'TERRORIST' : 'CT'
+			)
 			team = otherTeam ? (otherTeam === 1 ? 2 : 1) : undefined
 		}
 
 		if (team === 1) state.team1Score = score
 		if (team === 2) state.team2Score = score
+	}
+
+	// By majority, nothing on the server stops a player from joining the wrong side
+	private teamOnSide(state: LiveMatchState, side: Side) {
+		const onSide = [...state.players.values()].filter(
+			player => player.side === side
+		)
+		const team1Count = onSide.filter(player => player.team === 1).length
+		const team2Count = onSide.length - team1Count
+
+		if (team1Count === team2Count) {
+			return undefined
+		}
+
+		return team1Count > team2Count ? 1 : 2
 	}
 
 	private async persist(state: LiveMatchState) {

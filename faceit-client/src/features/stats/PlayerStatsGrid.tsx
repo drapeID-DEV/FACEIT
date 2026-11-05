@@ -33,11 +33,13 @@ export function PlayerStatsGrid({
 		},
 		winRate: {
 			title: 'Win %',
-			value: playerStats.winRate
+			value: playerStats.winRate,
+			decimals: 2
 		},
 		avg: {
 			title: 'AVG',
-			value: playerStats.averageKills
+			value: playerStats.averageKills,
+			decimals: 2
 		},
 		kd: {
 			title: 'K/D',

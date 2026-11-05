@@ -60,6 +60,9 @@ export class PasswordRecoveryService {
 		const hasExpired = new Date(existingToken.expiresIn) < new Date()
 
 		if (hasExpired) {
+			await this.prismaService.token.delete({
+				where: { id: existingToken.id, type: TokenType.PASSWORD_RESET }
+			})
 			throw new BadRequestException(
 				'The password reset token has expired. Please request a new token.'
 			)

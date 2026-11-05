@@ -1,5 +1,6 @@
 import { AcceptanceModal } from '@/features/matchmaking/components/AcceptanceModal';
 import '../globals.css';
+import { PartyInviteModal } from '@/features/party/components/PartyInviteModal';
 import { LeftSidebar } from '@/features/menu-system/components/LeftSidebar';
 import { RightSidebar } from '@/features/menu-system/components/RightSidebar';
 import { PopupMenu } from '@/features/popups/components/PopupMenu';
@@ -13,6 +14,7 @@ export default function MainLayout({
 	return (
 		<SocketProvider>
 			<AcceptanceModal />
+			<PartyInviteModal />
 			<LeftSidebar />
 			<main className="relative flex-1 min-w-0 h-full overflow-hidden rounded-2xl bg-neutral-950">
 				<div className="h-full overflow-auto px-25 py-5">

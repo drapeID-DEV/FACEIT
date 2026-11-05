@@ -73,7 +73,9 @@ export class MatchService {
 		}
 	}
 
-	public async create(playerIds: string[]) {
+	public async create(teams: string[][], matchType: MatchType) {
+		const playerIds = teams.flat()
+
 		const players = await this.prisma.user.findMany({
 			where: {
 				id: {
@@ -89,14 +91,14 @@ export class MatchService {
 		return this.prisma.$transaction(async tx => {
 			return tx.match.create({
 				data: {
-					matchType: MatchType.ONE_VS_ONE,
-					maxPlayersPerTeam: 1,
+					matchType,
+					maxPlayersPerTeam: teams[0].length,
 					status: MatchStatus.READY,
 
 					participants: {
-						create: players.map((player, index) => ({
+						create: players.map(player => ({
 							userId: player.id,
-							team: index < players.length / 2 ? 1 : 2,
+							team: teams[0].includes(player.id) ? 1 : 2,
 							isWinner: false,
 							eloBefore: player.elo,
 							eloAfter: player.elo
@@ -308,6 +310,15 @@ export class MatchService {
 		})
 	}
 
+	public async finishMatchByAdmin(matchId: string, data: FinishMatchDto) {
+		const match = await this.finishMatch(matchId, data)
+
+		this.eventEmitter.emit('match.finished', { matchId })
+		this.gameServerService.stop(matchId)
+
+		return match
+	}
+
 	@OnEvent('match.gameOver')
 	public async handleGameOver(payload: MatchGameOverPayload) {
 		const { matchId, ...data } = payload
@@ -333,6 +344,13 @@ export class MatchService {
 			throw new NotFoundException('Match not found')
 		}
 
+		if (
+			match.status === MatchStatus.FINISHED ||
+			match.status === MatchStatus.CANCELLED
+		) {
+			throw new BadRequestException('Match is already over')
+		}
+
 		await this.prisma.match.update({
 			where: { id: matchId },
 			data: {
@@ -341,6 +359,9 @@ export class MatchService {
 			}
 		})
 
+		this.eventEmitter.emit('match.finished', { matchId })
+		this.gameServerService.stop(matchId)
+
 		return this.findById(matchId)
 	}
 
@@ -348,7 +369,7 @@ export class MatchService {
 		const match = this.prisma.match.findFirst({
 			where: {
 				status: {
-					in: [MatchStatus.READY, MatchStatus.LIVE]
+					in: [MatchStatus.READY, MatchStatus.MAP_BAN, MatchStatus.LIVE]
 				},
 				participants: {
 					some: {

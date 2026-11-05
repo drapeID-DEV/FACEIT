@@ -1,10 +1,14 @@
 import { Injectable } from '@nestjs/common'
 import { randomUUID } from 'crypto'
 
-import { QueuePlayer } from './interfaces/queue-player.interface'
+import { MatchType } from '../../generated/prisma'
+import { QueueEntry, QueuePlayer } from './interfaces/queue-player.interface'
 
 export interface MatchAcceptance {
 	id: string
+	matchType: MatchType
+	// The queue entries behind this acceptance, split into the two teams
+	teams: [QueueEntry[], QueueEntry[]]
 	players: QueuePlayer[]
 	acceptedPlayers: Set<string>
 	expiresAt: Date
@@ -21,11 +25,13 @@ export class MatchAcceptanceService {
 		this.expirationHandler = handler
 	}
 
-	public create(players: QueuePlayer[]) {
+	public create(matchType: MatchType, teams: [QueueEntry[], QueueEntry[]]) {
 		const acceptance = {} as MatchAcceptance
 
 		acceptance.id = randomUUID()
-		acceptance.players = players
+		acceptance.matchType = matchType
+		acceptance.teams = teams
+		acceptance.players = teams.flat().flatMap(entry => entry.players)
 		acceptance.acceptedPlayers = new Set()
 		acceptance.expiresAt = new Date(Date.now() + 30_000)
 

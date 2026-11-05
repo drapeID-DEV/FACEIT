@@ -84,6 +84,8 @@ export function useMatchSocket(matchId: string) {
 					forceRefetch: true
 				})
 			);
+			// An admin cancel can land mid map ban, and it frees players to queue again
+			dispatch(matchApi.util.invalidateTags(['MapBan', 'CurrentMatch']));
 		};
 
 		socket.on('connect', joinMatch);

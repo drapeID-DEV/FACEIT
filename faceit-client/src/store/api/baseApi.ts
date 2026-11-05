@@ -38,7 +38,11 @@ export const api = createApi({
 		'Acceptance',
 		'Friends',
 		'FriendRequests',
-		'FriendshipStatus'
+		'FriendshipStatus',
+		'News',
+		'Match',
+		'Party',
+		'Notifications'
 	],
 	endpoints: () => ({})
 });

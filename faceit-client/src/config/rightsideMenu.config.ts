@@ -12,5 +12,9 @@ export const POPUP_MENU: IWidgetBtn[] = [
     {
         title: "friends",
         icon: "friends"
+    },
+    {
+        title: "news",
+        icon: "news"
     }
 ]

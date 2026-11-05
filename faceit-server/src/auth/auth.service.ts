@@ -146,7 +146,15 @@ export class AuthService {
 					)
 				}
 
-				resolve({ user })
+				// Callers pass the full row, which holds the password hash and OAuth tokens
+				resolve({
+					user: {
+						id: user.id,
+						email: user.email,
+						nickname: user.nickname,
+						role: user.role
+					}
+				})
 			})
 		})
 	}

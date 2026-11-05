@@ -24,6 +24,8 @@ import { memoryStorage } from 'multer'
 import { Authorization } from '@/auth/decorators/auth.decorator'
 import { Authorized } from '@/auth/decorators/authorized.decorator'
 
+import { UpdateUserBanDto } from './dto/update-user-ban.dto'
+import { UpdateUserRoleDto } from './dto/update-user-role.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
 import { SteamLinkService } from './steam-link.service'
 import { UserService } from './user.service'
@@ -55,6 +57,28 @@ export class UserController {
 	@Get('by-id/:id')
 	public async findById(@Param('id') id: string) {
 		return this.userService.findById(id)
+	}
+
+	@Authorization(UserRole.ADMIN)
+	@HttpCode(HttpStatus.OK)
+	@Patch(':id/role')
+	public async updateRole(
+		@Authorized('id') adminId: string,
+		@Param('id') id: string,
+		@Body() dto: UpdateUserRoleDto
+	) {
+		return this.userService.updateRole(adminId, id, dto.role)
+	}
+
+	@Authorization(UserRole.ADMIN)
+	@HttpCode(HttpStatus.OK)
+	@Patch(':id/ban')
+	public async updateBan(
+		@Authorized('id') adminId: string,
+		@Param('id') id: string,
+		@Body() dto: UpdateUserBanDto
+	) {
+		return this.userService.updateBan(adminId, id, dto.isBanned)
 	}
 
 	@Authorization()

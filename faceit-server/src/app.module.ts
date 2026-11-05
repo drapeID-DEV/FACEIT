@@ -13,8 +13,12 @@ import { IS_DEV_ENV } from './libs/common/utils/is-dev.util'
 import { MatchBanModule } from './match/match-ban/match-ban.module'
 import { MatchModule } from './match/match.module'
 import { MatchmakingModule } from './matchmaking/matchmaking.module'
+import { NewsModule } from './news/news.module'
+import { NotificationModule } from './notification/notification.module'
+import { PartyModule } from './party/party.module'
 import { PlayerModule } from './player/player.module'
 import { PrismaModule } from './prisma/prisma.module'
+import { SearchModule } from './search/search.module'
 import { StatsModule } from './stats/stats.module'
 import { UserModule } from './user/user.module'
 import { FriendshipModule } from './friendship/friendship.module';
@@ -44,7 +48,11 @@ import { GameServerModule } from './game-server/game-server.module';
 		LeaderboardModule,
 		FriendshipModule,
 		AiModule,
-		GameServerModule
+		GameServerModule,
+		NewsModule,
+		NotificationModule,
+		PartyModule,
+		SearchModule
 	]
 })
 export class AppModule {}

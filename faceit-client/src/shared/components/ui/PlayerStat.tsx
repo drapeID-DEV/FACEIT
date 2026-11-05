@@ -13,7 +13,7 @@ export function PlayerStat({ title, value, variant, decimals }: Props) {
 
 	return (
 		<div className={styles}>
-			<p>{decimals !== undefined ? value?.toFixed(decimals) : value}</p>
+			<p>{decimals !== undefined ? value?.toFixed(2) : value}</p>
 			<p>{title}</p>
 		</div>
 	);

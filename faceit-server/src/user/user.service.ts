@@ -3,19 +3,26 @@ import {
 	Injectable,
 	NotFoundException
 } from '@nestjs/common'
+import { EventEmitter2 } from '@nestjs/event-emitter'
 import { hash } from 'argon2'
 
 import { CloudinaryService } from '@/cloudinary/cloudinary.service'
 import { PrismaService } from '@/prisma/prisma.service'
 
-import { AuthMethod, User } from '../../generated/prisma'
+import { AuthMethod, User, UserRole } from '../../generated/prisma'
 import { UpdateUserDto } from './dto/update-user.dto'
+
+// These results reach API responses, so the password hash must stay out
+const safeUserOmit = {
+	password: true
+}
 
 @Injectable()
 export class UserService {
 	public constructor(
 		private readonly prismaService: PrismaService,
-		private readonly cloudinaryService: CloudinaryService
+		private readonly cloudinaryService: CloudinaryService,
+		private readonly eventEmitter: EventEmitter2
 	) {}
 
 	public async findById(id: string) {
@@ -23,9 +30,7 @@ export class UserService {
 			where: {
 				id
 			},
-			include: {
-				accounts: true
-			}
+			omit: safeUserOmit
 		})
 
 		if (!user) {
@@ -47,6 +52,8 @@ export class UserService {
 				nickname: true,
 				profilePic: true,
 				elo: true,
+				role: true,
+				isBanned: true,
 				createdAt: true,
 				updatedAt: true,
 				playerStats: true
@@ -149,8 +156,67 @@ export class UserService {
 				email: dto.email,
 				nickname: dto.nickname,
 				isTwoFactorEnabled: dto.isTwoFactorEnabled
-			}
+			},
+			omit: safeUserOmit
 		})
+	}
+
+	public async updateRole(adminId: string, userId: string, role: UserRole) {
+		if (adminId === userId) {
+			throw new BadRequestException('You cannot change your own role.')
+		}
+
+		const user = await this.findById(userId)
+
+		if (user.isBanned && role === UserRole.ADMIN) {
+			throw new BadRequestException(
+				'Unban this user before promoting them.'
+			)
+		}
+
+		return this.prismaService.user.update({
+			where: {
+				id: userId
+			},
+			data: {
+				role
+			},
+			omit: safeUserOmit
+		})
+	}
+
+	public async updateBan(
+		adminId: string,
+		userId: string,
+		isBanned: boolean
+	) {
+		if (adminId === userId) {
+			throw new BadRequestException('You cannot ban yourself.')
+		}
+
+		const user = await this.findById(userId)
+
+		if (isBanned && user.role === UserRole.ADMIN) {
+			throw new BadRequestException(
+				'Remove admin rights before banning this user.'
+			)
+		}
+
+		const updatedUser = await this.prismaService.user.update({
+			where: {
+				id: userId
+			},
+			data: {
+				isBanned
+			},
+			omit: safeUserOmit
+		})
+
+		if (isBanned) {
+			this.eventEmitter.emit('user.banned', { userId })
+		}
+
+		return updatedUser
 	}
 
 	// steamId must come from SteamLinkService.verify, never from user input
@@ -177,7 +243,8 @@ export class UserService {
 	public async unlinkSteam(userId: string) {
 		return this.prismaService.user.update({
 			where: { id: userId },
-			data: { steamId: null }
+			data: { steamId: null },
+			omit: safeUserOmit
 		})
 	}
 
@@ -207,7 +274,8 @@ export class UserService {
 			data: {
 				profilePic: image.secure_url,
 				profilePictureId: image.public_id
-			}
+			},
+			omit: safeUserOmit
 		})
 
 		return updatedUser

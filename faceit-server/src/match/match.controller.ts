@@ -12,6 +12,7 @@ import { Request } from 'express'
 
 import { Authorization } from '@/auth/decorators/auth.decorator'
 
+import { UserRole } from '../../generated/prisma'
 import { FinishMatchDto } from './dto/finish-match.dto'
 import { MatchService } from './match.service'
 
@@ -46,19 +47,22 @@ export class MatchController {
 		return this.matchService.findById(matchId)
 	}
 
+	@Authorization(UserRole.ADMIN)
 	@Patch(':id/start')
 	async startMatch(@Param('id') matchId: string) {
 		return this.matchService.startMatch(matchId)
 	}
 
+	@Authorization(UserRole.ADMIN)
 	@Patch(':id/finish')
 	async finishMatch(
 		@Param('id') matchId: string,
 		@Body() dto: FinishMatchDto
 	) {
-		return this.matchService.finishMatch(matchId, dto)
+		return this.matchService.finishMatchByAdmin(matchId, dto)
 	}
 
+	@Authorization(UserRole.ADMIN)
 	@Patch(':id/cancel')
 	async cancelMatch(@Param('id') matchId: string) {
 		return this.matchService.cancelMatch(matchId)

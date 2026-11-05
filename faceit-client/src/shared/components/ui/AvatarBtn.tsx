@@ -1,5 +1,6 @@
 'use client';
 
+import { skipToken } from '@reduxjs/toolkit/query';
 import { useGetPublicProfileQuery } from '@/store/api/userApi';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -22,9 +23,9 @@ interface ButtonProps extends BaseProps {
 type Props = LinkProps | ButtonProps;
 
 export function AvatarBtn({ onClick, isLink, href, nickname }: Props) {
-	if (!nickname) return null;
+	const { data } = useGetPublicProfileQuery(nickname ?? skipToken);
 
-	const { data } = useGetPublicProfileQuery(nickname);
+	if (!nickname) return null;
 
 	const avatar = data?.profilePic ? (
 		<Image

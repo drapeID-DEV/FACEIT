@@ -59,6 +59,48 @@ async function flush(service: LiveMatchService) {
 	await (service as unknown as { queues: Map<string, Promise<void>> }).queues.get('m1')
 }
 
+describe('LiveMatchService team score', () => {
+	const steamId = (index: number) => `[U:1:${1000 + index}]`
+
+	it('resolves the side by majority when a player joins the wrong side', async () => {
+		const { service, prisma } = createService()
+
+		prisma.match.findUnique.mockResolvedValue({
+			id: 'm1',
+			status: 'LIVE',
+			team1Score: 0,
+			team2Score: 0,
+			participants: [
+				{ userId: 'wrong', team: 2, index: 1 },
+				{ userId: 'a', team: 1, index: 2 },
+				{ userId: 'b', team: 1, index: 3 },
+				{ userId: 'c', team: 2, index: 4 }
+			].map(({ index, ...player }) => ({
+				...player,
+				kills: 0,
+				deaths: 0,
+				assists: 0,
+				headshots: 0,
+				user: { steamId: (76561197960265728n + BigInt(1000 + index)).toString() }
+			}))
+		})
+
+		service.handleLog(
+			'm1',
+			[
+				`"Wrong<1><${steamId(1)}><CT>" [0 0 0] killed "C<4><${steamId(4)}><TERRORIST>" [0 0 0] with "ak47"`,
+				`"A<2><${steamId(2)}><CT>" [0 0 0] killed "C<4><${steamId(4)}><TERRORIST>" [0 0 0] with "ak47"`,
+				`"B<3><${steamId(3)}><CT>" [0 0 0] killed "C<4><${steamId(4)}><TERRORIST>" [0 0 0] with "ak47"`,
+				'Team "CT" scored "5" with "3" players'
+			].join('\n')
+		)
+		await flush(service)
+
+		expect(service.getSnapshot('m1')?.team1Score).toBe(5)
+		expect(service.getSnapshot('m1')?.team2Score).toBe(0)
+	})
+})
+
 describe('LiveMatchService', () => {
 	it('tracks kills, headshots and team scores from a log stream', async () => {
 		const { service, emitter, prisma } = createService()

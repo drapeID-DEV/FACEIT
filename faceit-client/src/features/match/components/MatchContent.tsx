@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 
 import { notification } from '@/shared/utils/notifications';
 
+import { AdminMatchControls } from './AdminMatchControls';
 import { TeamList } from './TeamList';
 import { MapBanScreen } from './MapBan/MapBanScreen';
 import { SelectedMapScreen } from './SelectedMapScreen';
@@ -25,6 +26,7 @@ export function MatchContent({ matchId }: Props) {
 	const {
 		match,
 		mapBan,
+		me,
 		team1,
 		team2,
 		team1Leader,
@@ -64,6 +66,13 @@ export function MatchContent({ matchId }: Props) {
 				isLive={liveStats?.isLive ?? false}
 				round={liveStats?.isLive ? liveStats.round : null}
 			/>
+			{me?.role === 'ADMIN' && (
+				<AdminMatchControls
+					match={match}
+					team1Name={team1Name}
+					team2Name={team2Name}
+				/>
+			)}
 			<MatchTabs activeTab={activeTab} onChange={setActiveTab} />
 
 			{activeTab === 'overview' ? (

@@ -1,5 +1,6 @@
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 import { IMatch, TMatchType } from '../match';
+import { INews } from '../news';
 import { IShortStats } from '../stats';
 
 export interface IInfoMessageRes {
@@ -11,6 +12,8 @@ export interface IPlayerProfileRes {
 	nickname: string;
 	profilePic: string;
 	elo: number;
+	role: string;
+	isBanned: boolean;
 	createdAt: string;
 	updatedAt: string;
 	playerStats: IShortStats;
@@ -25,6 +28,7 @@ export interface IQueueStatusRes {
 	inQueue: boolean;
 	queuePosition: number;
 	queueSize: number;
+	searching: Record<TMatchType, number>;
 	matchType: TMatchType;
 	joinedAt: string;
 }
@@ -96,6 +100,14 @@ export interface IMyLeaderboardRes {
 	profilePic: string | null;
 	elo: number;
 	rank: number;
+}
+
+export interface INewsRes {
+	news: INews[];
+	total: number;
+	page: number;
+	limit: number;
+	totalPages: number;
 }
 
 export enum FriendshipStatus {
