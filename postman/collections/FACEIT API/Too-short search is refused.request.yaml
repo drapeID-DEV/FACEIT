@@ -1,0 +1,12 @@
+$kind: http-request
+method: GET
+url: '{{base_url}}/search?q=a'
+order: 12000
+headers:
+  - key: Cookie
+    value: '{{session_cookie}}'
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test('returns 400', () => pm.response.to.have.status(400));

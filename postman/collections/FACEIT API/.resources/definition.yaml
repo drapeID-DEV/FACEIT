@@ -1,0 +1,11 @@
+$kind: collection
+name: FACEIT API
+description: >-
+  Checks real API behaviour against a local backend, including requests that must be rejected.
+  Run it against a throwaway database seeded with src/scripts/seed-demo-users.ts.
+variables:
+  - key: base_url
+    value: 'http://localhost:8080'
+  - key: demo_password
+    value: demo-password-1
+    description: Dev-only password from seed-demo-users.ts

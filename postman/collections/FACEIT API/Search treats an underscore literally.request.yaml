@@ -1,0 +1,15 @@
+$kind: http-request
+method: GET
+url: '{{base_url}}/search?q=demo_1'
+order: 11000
+headers:
+  - key: Cookie
+    value: '{{session_cookie}}'
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test('returns 200', () => pm.response.to.have.status(200));
+      const players = pm.response.json().players;
+      pm.test('finds players', () => pm.expect(players.length).to.be.above(0));
+      pm.test('every result contains the literal text', () => players.forEach(player => pm.expect(player.nickname).to.include('demo_1')));

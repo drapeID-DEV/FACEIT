@@ -1,0 +1,12 @@
+$kind: http-request
+method: POST
+url: '{{base_url}}/party/invite/{{stranger_id}}'
+order: 15000
+headers:
+  - key: Cookie
+    value: '{{session_cookie}}'
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test('returns 403', () => pm.response.to.have.status(403));

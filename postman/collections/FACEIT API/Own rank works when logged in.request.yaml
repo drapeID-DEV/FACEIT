@@ -1,0 +1,12 @@
+$kind: http-request
+method: GET
+url: '{{base_url}}/leaderboard/me'
+order: 10000
+headers:
+  - key: Cookie
+    value: '{{session_cookie}}'
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test('returns 200', () => pm.response.to.have.status(200));

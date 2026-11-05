@@ -1,0 +1,12 @@
+$kind: http-request
+method: POST
+url: '{{base_url}}/matchmaking/queue/leave'
+order: 20000
+headers:
+  - key: Cookie
+    value: '{{session_cookie}}'
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test('is accepted', () => pm.response.to.be.success);

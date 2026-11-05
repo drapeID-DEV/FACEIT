@@ -99,3 +99,5 @@ coverage/
 # ==========================================
 CLAUDE.md
 AGENTS.md
+# Test fixture read by live-match.service.spec.ts
+!faceit-server/test/fixtures/*.log

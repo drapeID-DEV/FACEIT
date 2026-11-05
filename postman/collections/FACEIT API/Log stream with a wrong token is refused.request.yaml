@@ -1,0 +1,9 @@
+$kind: http-request
+method: POST
+url: '{{base_url}}/game-server/any-match/log/wrong-token'
+order: 4000
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test('returns 403', () => pm.response.to.have.status(403));

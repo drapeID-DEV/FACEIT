@@ -1,0 +1,19 @@
+$kind: http-request
+method: POST
+url: '{{base_url}}/auth/login'
+order: 5000
+headers:
+  - key: Content-Type
+    value: application/json
+body:
+  type: json
+  content: |-
+    {"email": "demo_1@demo.local", "password": "{{demo_password}}"}
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test('returns 200', () => pm.response.to.have.status(200));
+      const cookie = pm.response.headers.get('Set-Cookie');
+      pm.test('sets a session cookie', () => pm.expect(cookie).to.be.a('string'));
+      pm.collectionVariables.set('session_cookie', cookie.split(';')[0]);

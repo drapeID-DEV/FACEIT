@@ -6,7 +6,7 @@ import {
 	NotFoundException
 } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
-import { User } from '@prisma/client'
+import { User } from '../../../generated/prisma'
 import { Request } from 'express'
 import { v4 as uuidv4 } from 'uuid'
 

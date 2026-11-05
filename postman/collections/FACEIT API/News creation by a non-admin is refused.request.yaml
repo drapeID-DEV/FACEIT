@@ -1,0 +1,18 @@
+$kind: http-request
+method: POST
+url: '{{base_url}}/news'
+order: 8000
+headers:
+  - key: Content-Type
+    value: application/json
+  - key: Cookie
+    value: '{{session_cookie}}'
+body:
+  type: json
+  content: |-
+    {"title": "Not allowed", "description": "A regular player must not publish this."}
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test('returns 403', () => pm.response.to.have.status(403));

@@ -1,0 +1,13 @@
+$kind: http-request
+method: GET
+url: '{{base_url}}/users/profile/demo_2'
+order: 13000
+headers:
+  - key: Cookie
+    value: '{{session_cookie}}'
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test('returns 200', () => pm.response.to.have.status(200));
+      pm.collectionVariables.set('friend_id', pm.response.json().id);

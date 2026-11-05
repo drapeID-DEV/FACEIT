@@ -1,0 +1,18 @@
+$kind: http-request
+method: POST
+url: '{{base_url}}/matchmaking/queue/join'
+order: 18000
+headers:
+  - key: Content-Type
+    value: application/json
+  - key: Cookie
+    value: '{{session_cookie}}'
+body:
+  type: json
+  content: |-
+    {"matchType": "ONE_VS_ONE"}
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test('is accepted', () => pm.response.to.be.success);
